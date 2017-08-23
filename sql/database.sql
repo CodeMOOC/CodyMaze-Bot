@@ -45,12 +45,6 @@ CREATE TABLE `user_status` (
 --
 
 --
--- Indexes for table `moves`
---
-ALTER TABLE `moves`
-  ADD PRIMARY KEY (`telegram_id`);
-
---
 -- Indexes for table `user_status`
 --
 ALTER TABLE `user_status`
