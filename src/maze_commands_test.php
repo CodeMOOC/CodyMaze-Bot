@@ -59,5 +59,15 @@ $c7_2 = command_7(123, 'e4e');
 assert($c7_2[0] == '3{sa}');
 assert($c7_2[1] == 'd4s');
 
+//Command 8
+assert(command_8(123, 'a1w')[0] == 'se[nero]{sa}');
+assert(command_8(123, 'a1w')[1] == 'a2s');
+assert(command_8(123, 'e5n')[0] == 'se[bianco]{sa}');
+assert(command_8(123, 'e5n')[1] == 'd5w');
+assert(command_8(123, 'b1e')[0] == 'se[nero]{da}');
+assert(command_8(123, 'b1e')[1] == 'b2s');
+assert(command_8(123, 'd3s')[0] == 'se[bianco]{da}');
+assert(command_8(123, 'd3s')[1] == 'c3w');
+
 
 echo 'All OK.' . PHP_EOL;

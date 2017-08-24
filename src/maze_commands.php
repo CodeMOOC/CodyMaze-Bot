@@ -199,7 +199,23 @@ function command_7($telegram_id, $current_coordinate) {
 }
 
 function command_8($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+
+    $actual_color = coordinate_is_black($current_coordinate)? 'nero':'bianco';
+
+    $right_instructions = "sa";
+    $next_coordinate = coordinate_advance(coordinate_turn_left($current_coordinate));
+
+    if(!coordinate_out_right($current_coordinate)){
+        $right_instructions = "da";
+        $next_coordinate = coordinate_advance(coordinate_turn_right($current_coordinate));
+    }
+
+    $str_instructions = sprintf("se[%s]{%s}", $actual_color, $right_instructions);
+
+    return array(
+        $str_instructions,
+        $next_coordinate
+    );
 }
 
 function command_9($telegram_id, $current_coordinate) {
