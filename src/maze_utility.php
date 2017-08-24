@@ -98,7 +98,6 @@ function coordinate_advance($coordinate) {
 }
 
 function coordinate_turn_left($coordinate) {
-
     $row = coordinate_to_row($coordinate);
     $column = coordinate_to_column($coordinate);
     $direction = coordinate_to_direction($coordinate);
@@ -112,7 +111,6 @@ function coordinate_turn_left($coordinate) {
 }
 
 function coordinate_turn_right($coordinate) {
-
     $row = coordinate_to_row($coordinate);
     $column = coordinate_to_column($coordinate);
     $direction = coordinate_to_direction($coordinate);
@@ -120,6 +118,18 @@ function coordinate_turn_right($coordinate) {
     $direction_index = strpos(DIRECTIONS, $direction);
 
     $new_direction = substr(DIRECTIONS, ($direction_index == 3? 0: $direction_index + 1),1);
+
+    return coordinate_create($column, $row, $new_direction);
+}
+
+function coordinate_turn_180($coordinate) {
+    $row = coordinate_to_row($coordinate);
+    $column = coordinate_to_column($coordinate);
+    $direction = coordinate_to_direction($coordinate);
+
+    $direction_index = strpos(DIRECTIONS, $direction);
+
+    $new_direction = substr(DIRECTIONS, ($direction_index + 2) % strlen(DIRECTIONS), 1);
 
     return coordinate_create($column, $row, $new_direction);
 }
