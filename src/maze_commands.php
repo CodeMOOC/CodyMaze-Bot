@@ -285,7 +285,10 @@ function command_11($telegram_id, $current_coordinate, $count = null) {
 }
 
 function command_12($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    return array(
+        'finché(c\'è strada){a}',
+        coordinate_move_to_end($current_coordinate)
+    );
 }
 
 function command_13($telegram_id, $current_coordinate) {

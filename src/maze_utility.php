@@ -222,13 +222,22 @@ function coordinate_find_initial_direction($position){
     }
 }
 
-function coordinate_max_ahead($coordinate){
+/*
+ * Moves ahead as long as possible.
+ */
+function coordinate_move_to_end($coordinate) {
+    while(!coordinate_out_ahead($coordinate, 1)) {
+        $coordinate = coordinate_advance($coordinate);
+    }
+    return $coordinate;
+}
 
+function coordinate_max_ahead($coordinate) {
     $i = 0;
-    do{
+    do {
         $i++;
-    }while(!coordinate_out_ahead($coordinate, $i));
+    }
+    while(!coordinate_out_ahead($coordinate, $i));
 
     return $i-1;
-
 }
