@@ -160,6 +160,7 @@ function coordinate_out_ahead($coordinate, $num = 1) {
     return false;
 }
 
+
 /* Checks whether the square left is over the maze board */
 function coordinate_out_left($coordinate) {
     return coordinate_out_ahead(coordinate_turn_left($coordinate), 1);
@@ -190,4 +191,15 @@ function coordinate_find_initial_direction($position){
             return null;
         }
     }
+}
+
+function coordinate_max_ahead($coordinate){
+
+    $i = 0;
+    do{
+        $i++;
+    }while(!coordinate_out_ahead($coordinate, $i));
+
+    return $i-1;
+
 }
