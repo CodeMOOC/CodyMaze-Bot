@@ -28,7 +28,6 @@ function command_1($telegram_id, $current_coordinate) {
 
 /* Turn right or left (if ahead is not empty) */
 function command_2($telegram_id, $current_coordinate) {
-
     $possible_directions = array();
     $possible_directions_coords = array();
 
@@ -45,7 +44,7 @@ function command_2($telegram_id, $current_coordinate) {
     }
 
     if(count($possible_directions) < 1) {
-        Log:fatal('Cannot execute command_2 from position (no valid option)');
+        Logger::fatal('Cannot execute command_2 from position (no valid option)');
     }
 
     $direction_index = array_rand($possible_directions);
@@ -80,7 +79,7 @@ function command_4($telegram_id, $current_coordinate) {
 
 function command_5($telegram_id, $current_coordinate) {
     if(coordinate_out_ahead($current_coordinate, 2)){
-        Log:fatal('Cannot execute command_5 from position (no valid path)');
+        Loger::fatal('Cannot execute command_5 from position (no valid path)');
     }
 
     return array(
