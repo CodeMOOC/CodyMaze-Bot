@@ -20,8 +20,32 @@ function command_1($telegram_id, $current_coordinate) {
     );
 }
 
+/* Turn right or left (if ahead is not empty) */
 function command_2($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+
+    $possible_directions = array();
+    $possible_directions_coords = array();
+
+    $c_turned_right = coordinate_turn_right($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_right)){
+        $possible_directions_coords[]= $c_turned_right;
+        $possible_directions[]= 'd';
+    }
+
+    $c_turned_left = coordinate_turn_left($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_left)){
+        $possible_directions_coords[]= $c_turned_left;
+        $possible_directions[]= 's';
+    }
+
+    $direction_index = array_rand($possible_directions);
+
+    return array(
+        $possible_directions[$direction_index],
+        $possible_directions_coords[$direction_index]
+    );
+
+
 }
 
 function command_3($telegram_id, $current_coordinate) {
