@@ -52,12 +52,12 @@ $tc = command_6(123, 'd4n'); assert($tc[1] == 'e4e' || $tc[1] == 'a4w');
 
 // Command 7
 $c7_1 = command_7(123, 'a1e');
-assert(strlen($c7_1[0]) >= 3 && strlen($c7_1[0]) <= 4);
-assert($c7_1 != null);
+assert($c7_1[0] == '1{da}');
+assert($c7_1[1] == 'a2s');
 
 $c7_2 = command_7(123, 'e4e');
-assert(strlen($c7_2[0]) >= 3 && strlen($c7_2[0]) <= 4);
-assert($c7_2 != null);
+assert($c7_2[0] == '3{sa}');
+assert($c7_2[1] == 'd4s');
 
 
 echo 'All OK.' . PHP_EOL;
