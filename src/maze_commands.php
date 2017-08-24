@@ -93,7 +93,37 @@ function command_6($telegram_id, $current_coordinate) {
 }
 
 function command_7($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $command = '';
+    $final_coordinates = $current_coordinate;
+    while(true) {
+        $command = '';
+        $final_coordinates = $current_coordinate;
+        $turns = rand(2, 3);
+        for($i = 0; $i < $turns; $i++) {
+            if(rand(1, 2) == 1) {
+                $command .= 's';
+                $final_coordinates = coordinate_turn_left($final_coordinates);
+            }
+            else {
+                $command .= 'd';
+                $final_coordinates = coordinate_turn_right($final_coordinates);
+            }
+        }
+
+        $command .= 'a';
+        $final_coordinates = coordinate_advance($final_coordinates);
+        if($final_coordinates != null) {
+            Logger::info("Command 7 generated {$current_coordinate} + '{$command}' = {$final_coordinates}");
+
+            return array(
+                $command,
+                $final_coordinates
+            );
+        }
+
+        // Unreachable location generated
+        Logger::debug("Command 7 rejected {$current_coordinate} + '{$command}'");
+    }
 }
 
 function command_8($telegram_id, $current_coordinate) {
