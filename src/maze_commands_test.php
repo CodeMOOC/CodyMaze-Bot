@@ -101,4 +101,12 @@ assert(command_12(123, 'c2n')[1] == 'c1n');
 assert(command_12(123, 'a5s')[1] == 'a5s');
 assert(command_12(123, 'a1w')[1] == 'a1w');
 
+// Command 13
+assert(command_13(123, 'a1e')[1] == 'a1e');
+assert(command_13(123, 'b1s')[1] == 'b1s');
+assert(command_13(123, 'c1n')[1] == 'e2s');
+assert(command_13(123, 'd1w')[1] == 'b1w');
+assert(command_13(123, 'b2s')[1] == 'a4n');
+assert(command_13(123, 'c3e')[1] == 'c5w');
+
 echo 'All OK.' . PHP_EOL;
