@@ -292,5 +292,13 @@ function command_12($telegram_id, $current_coordinate) {
 }
 
 function command_13($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $final_coordinate = $current_coordinate;
+    while(!coordinate_is_black($final_coordinate)) {
+        $final_coordinate = coordinate_standard_crawler($final_coordinate, true);
+    }
+
+    return array(
+        "finché(non stella){se(strada davanti){a}se(strada a dx){d}altrimenti{s}}",
+        $final_coordinate
+    );
 }
