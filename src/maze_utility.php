@@ -156,3 +156,25 @@ function coordinate_empty_ahead($coordinate, $num = 1) {
 
     return true;
 }
+
+function coordinate_find_initial_direction($position){
+    global $cardinal_position_to_name_map;
+
+    $column = substr($position, 0, 1);
+    $row = substr($position, 1, 1);
+    Logger::debug("Initial position. Column: {$column} Row: {$row}.");
+    if($column == 'a')
+        return $cardinal_position_to_name_map['e'];
+    elseif($column == 'e')
+        return $cardinal_position_to_name_map['w'];
+    else {
+        if($row == '1')
+            return $cardinal_position_to_name_map['s'];
+        elseif($row == '5')
+            return $cardinal_position_to_name_map['n'];
+        else {
+            Logger::error("user is in a wrong position");
+            return null;
+        }
+    }
+}
