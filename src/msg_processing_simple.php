@@ -11,6 +11,7 @@
 require_once('data.php');
 require_once('maze_generator.php');
 require_once('maze_commands.php');
+require_once ('htmltopdf.php');
 
 // This file assumes to be included by pull.php or
 // hook.php right after receiving a new Telegram update.
@@ -39,9 +40,9 @@ if(isset($update['message'])) {
 
             perform_command_start($chat_id, mb_strtolower($text));
             return;
-        } elseif (strpos($text, "/start") !== 0 && $user_info['completed'] == 0){
+        } elseif (strpos($text, "/start") !== 0 && $user_info[1] == 0){
             // User is probably writing name for certificate
-            request_name($chat_id, $user_info["name"]);
+            request_name($chat_id, $user_info[3]);
         }
         else {
             telegram_send_message($chat_id, "Non ho capito.");
@@ -70,7 +71,7 @@ if(isset($update['message'])) {
 
             // If user has started a game, check position by removing first step
             if($user_status !== NULL && $user_status !== false)
-                $lvl = $user_status - 1;
+                $lvl = $user_status;
             else {
                 Logger::debug("Can't find user status. Setting user lvl to 1.");
                 $lvl = 1;
@@ -81,9 +82,11 @@ if(isset($update['message'])) {
             Logger::debug("Current user's coordinate: {$current_coordinate}");
 
             // Prepare maze
-            $maze_data = generate_maze($lvl, $chat_id, $current_coordinate);
-            $maze_arrival_position = $maze_data[1];
+            $maze_data = generate_maze($lvl, $chat_id, $current_coordinate.$card_code);
+            $maze_arrival_position = substr($maze_data[1], 0,2);
             $maze_message = $maze_data[0];
+            Logger::debug("maze data[0]: $maze_data[0]");
+            Logger::debug("maze data[1]: $maze_data[1]");
 
             $success = db_perform_action("INSERT INTO moves (telegram_id, cell) VALUES($chat_id, '$maze_arrival_position')");
             Logger::debug("Success of insertion: {$success}");
@@ -97,7 +100,7 @@ if(isset($update['message'])) {
             telegram_send_message($chat_id, "Codice non valido. 😑");
         }
     } elseif(strpos($callback_data, 'name ') === 0) {
-        $data = substr($message, 5);
+        $data = substr($callback_data, 5);
         if ($data === "error"){
             // Request name again
             telegram_send_message($chat_id, "Riscrivimi il tuo nome e cognome:\n");

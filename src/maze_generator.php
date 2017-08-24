@@ -1,6 +1,7 @@
 <?php
 
 function generate_maze($lvl, $telegram_id, $current_coordinate){
+    Logger::debug("Genero comandi per lvl $lvl coordinate $current_coordinate");
     switch ($lvl){
         case 1:
             return command_1($telegram_id, $current_coordinate);
