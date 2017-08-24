@@ -219,7 +219,35 @@ function command_8($telegram_id, $current_coordinate) {
 }
 
 function command_9($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+
+
+    $instructions = array(
+        "sa",
+        "da"
+    );
+
+    $next_coords = array(
+        coordinate_advance(coordinate_turn_left($current_coordinate)),
+        coordinate_advance(coordinate_turn_right($current_coordinate))
+    );
+
+
+    if(!coordinate_out_right($current_coordinate)){
+        $instructions = array_reverse($instructions );
+        $next_coords = array_reverse($next_coords );
+    }
+
+    if(!coordinate_is_black($current_coordinate)){
+        $instructions = array_reverse($instructions);
+        $next_coords = array_reverse($next_coords);
+    }
+
+    $str_instructions = sprintf("se[nero]{%s}altrimenti{%s}", $instructions[0], $instructions[1]);
+
+    return array(
+        $str_instructions,
+        coordinate_is_black($current_coordinate)? $next_coords[0]: $next_coords[1]
+    );
 }
 
 function command_10($telegram_id, $current_coordinate, $count = null) {
