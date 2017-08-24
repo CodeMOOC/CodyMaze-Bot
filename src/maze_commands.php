@@ -33,14 +33,14 @@ function command_2($telegram_id, $current_coordinate) {
 
     $c_turned_right = coordinate_turn_right($current_coordinate);
     if(!coordinate_out_ahead($c_turned_right)){
-        $possible_directions_coords[]= $c_turned_right;
-        $possible_directions[]= 'd';
+        $possible_directions_coords[] = $c_turned_right;
+        $possible_directions[] = 'd';
     }
 
     $c_turned_left = coordinate_turn_left($current_coordinate);
     if(!coordinate_out_ahead($c_turned_left)){
-        $possible_directions_coords[]= $c_turned_left;
-        $possible_directions[]= 's';
+        $possible_directions_coords[] = $c_turned_left;
+        $possible_directions[] = 's';
     }
 
     if(count($possible_directions) < 1) {
@@ -96,15 +96,15 @@ function command_6($telegram_id, $current_coordinate) {
     $c_turned_right = coordinate_turn_right($current_coordinate);
     if(!coordinate_out_ahead($c_turned_right)){
         $possible_directions_coords []= $c_turned_right;
-        $possible_directions []= 'd';
-        $possible_advancements []=  coordinate_max_ahead($c_turned_right);
+        $possible_directions[] = 'd';
+        $possible_advancements[] = coordinate_max_ahead($c_turned_right);
     }
 
     $c_turned_left = coordinate_turn_left($current_coordinate);
     if(!coordinate_out_ahead($c_turned_left)){
         $possible_directions_coords []= $c_turned_left;
-        $possible_directions []= 's';
-        $possible_advancements []=  coordinate_max_ahead($c_turned_left);
+        $possible_directions[] = 's';
+        $possible_advancements[] = coordinate_max_ahead($c_turned_left);
     }
 
     if(count($possible_directions) < 1) {
@@ -114,12 +114,12 @@ function command_6($telegram_id, $current_coordinate) {
     $direction_index = array_rand($possible_directions);
 
     $new_coordinates = $possible_directions_coords[$direction_index];
-    for($i=0; $i < $possible_advancements[$direction_index]; $i++){
+    for($i = 0; $i < $possible_advancements[$direction_index]; $i++){
         $new_coordinates = coordinate_advance($new_coordinates);
     }
 
     return array(
-        $possible_directions[$direction_index]." ".$possible_advancements[$direction_index]."{a}",
+        $possible_directions[$direction_index] . $possible_advancements[$direction_index] . '{a}',
         $new_coordinates
     );
 
@@ -163,44 +163,10 @@ function command_7($telegram_id, $current_coordinate) {
             return coordinate_turn_left($coord);
         });
     }
-
-
-    $command = '';
-    $final_coordinates = $current_coordinate;
-    while(true) {
-        $command = '';
-        $final_coordinates = $current_coordinate;
-        $turns = rand(2, 3);
-        for($i = 0; $i < $turns; $i++) {
-            if(rand(1, 2) == 1) {
-                $command .= 's';
-                $final_coordinates = coordinate_turn_left($final_coordinates);
-            }
-            else {
-                $command .= 'd';
-                $final_coordinates = coordinate_turn_right($final_coordinates);
-            }
-        }
-
-        $command .= 'a';
-        $final_coordinates = coordinate_advance($final_coordinates);
-        if($final_coordinates != null) {
-            Logger::info("Command 7 generated {$current_coordinate} + '{$command}' = {$final_coordinates}");
-
-            return array(
-                $command,
-                $final_coordinates
-            );
-        }
-
-        // Unreachable location generated
-        Logger::debug("Command 7 rejected {$current_coordinate} + '{$command}'");
-    }
 }
 
 function command_8($telegram_id, $current_coordinate) {
-
-    $actual_color = coordinate_is_black($current_coordinate)? 'nero':'bianco';
+    $actual_color = coordinate_is_black($current_coordinate) ? 'stella' : 'non stella';
 
     $right_instructions = "sa";
     $next_coordinate = coordinate_advance(coordinate_turn_left($current_coordinate));
@@ -210,7 +176,7 @@ function command_8($telegram_id, $current_coordinate) {
         $next_coordinate = coordinate_advance(coordinate_turn_right($current_coordinate));
     }
 
-    $str_instructions = sprintf("se[%s]{%s}", $actual_color, $right_instructions);
+    $str_instructions = sprintf("se(%s){%s}", $actual_color, $right_instructions);
 
     return array(
         $str_instructions,
@@ -219,8 +185,6 @@ function command_8($telegram_id, $current_coordinate) {
 }
 
 function command_9($telegram_id, $current_coordinate) {
-
-
     $instructions = array(
         "sa",
         "da"
@@ -233,8 +197,8 @@ function command_9($telegram_id, $current_coordinate) {
 
 
     if(!coordinate_out_right($current_coordinate)){
-        $instructions = array_reverse($instructions );
-        $next_coords = array_reverse($next_coords );
+        $instructions = array_reverse($instructions);
+        $next_coords = array_reverse($next_coords);
     }
 
     if(!coordinate_is_black($current_coordinate)){
@@ -242,11 +206,11 @@ function command_9($telegram_id, $current_coordinate) {
         $next_coords = array_reverse($next_coords);
     }
 
-    $str_instructions = sprintf("se[nero]{%s}altrimenti{%s}", $instructions[0], $instructions[1]);
+    $str_instructions = sprintf("se(stella){%s}altrimenti{%s}", $instructions[0], $instructions[1]);
 
     return array(
         $str_instructions,
-        coordinate_is_black($current_coordinate)? $next_coords[0]: $next_coords[1]
+        coordinate_is_black($current_coordinate) ? $next_coords[0] : $next_coords[1]
     );
 }
 
@@ -292,5 +256,13 @@ function command_12($telegram_id, $current_coordinate) {
 }
 
 function command_13($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $final_coordinate = $current_coordinate;
+    while(!coordinate_is_black($final_coordinate)) {
+        $final_coordinate = coordinate_standard_crawler($final_coordinate, true);
+    }
+
+    return array(
+        "finché(non stella){se(strada davanti){a}se(strada a dx){d}altrimenti{s}}",
+        $final_coordinate
+    );
 }
