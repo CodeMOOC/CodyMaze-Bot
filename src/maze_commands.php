@@ -239,8 +239,21 @@ function command_10($telegram_id, $current_coordinate, $count = null) {
     );
 }
 
-function command_11($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+function command_11($telegram_id, $current_coordinate, $count = null) {
+    // Optional determinism for testability (🎓)
+    if($count == null) {
+        $count = rand(3, 5);
+    }
+
+    $final_coordinates = $current_coordinate;
+    for($i = 0; $i < $count; $i++) {
+        $final_coordinates = coordinate_standard_crawler($final_coordinates, false);
+    }
+
+    return array(
+        "{$count}{se(strada davanti){a}se(strada a sx){s}altrimenti{d}}",
+        $final_coordinates
+    );
 }
 
 function command_12($telegram_id, $current_coordinate) {
