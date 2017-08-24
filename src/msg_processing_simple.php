@@ -81,7 +81,7 @@ if(isset($update['message'])) {
             Logger::debug("Current user's coordinate: {$current_coordinate}");
 
             // Prepare maze
-            $maze_data = generate_maze($user_game_status, $chat_id, $current_coordinate);
+            $maze_data = generate_maze($lvl, $chat_id, $current_coordinate);
             $maze_arrival_position = $maze_data[1];
             $maze_message = $maze_data[0];
 
@@ -90,7 +90,7 @@ if(isset($update['message'])) {
 
             // Send maze
             // TODO: set correct text
-            telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.");
+            telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.", array("parse_mode" => "HTML"));
         }
         else {
             Logger::error("Invalid callback data: {$callback_data}");
