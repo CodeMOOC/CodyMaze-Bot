@@ -11,7 +11,6 @@
 require_once('data.php');
 require_once('maze_generator.php');
 require_once('maze_commands.php');
-require __DIR__ . '/vendor/autoload.php';
 
 // This file assumes to be included by pull.php or
 // hook.php right after receiving a new Telegram update.
@@ -91,7 +90,7 @@ if(isset($update['message'])) {
 
             // Send maze
             // TODO: set correct text
-            telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n {$maze_message}.");
+            telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.");
         }
         else {
             Logger::error("Invalid callback data: {$callback_data}");
