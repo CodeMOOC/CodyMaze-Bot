@@ -119,7 +119,7 @@ function command_6($telegram_id, $current_coordinate) {
     }
 
     return array(
-        $possible_directions[$direction_index] . ' ' . $possible_advancements[$direction_index] . '{a}',
+        $possible_directions[$direction_index] . $possible_advancements[$direction_index] . '{a}',
         $new_coordinates
     );
 
