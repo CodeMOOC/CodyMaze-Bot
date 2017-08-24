@@ -87,12 +87,15 @@ assert(coordinate_is_black('e3n') == false);
 assert(coordinate_is_black('e4n') == false);
 assert(coordinate_is_black('e5n') == false);
 
-assert(coordinate_empty_ahead('a1s', 1) == true);
-assert(coordinate_empty_ahead('a1n', 1) == false);
-assert(coordinate_empty_ahead('b3e', 2) == true);
-assert(coordinate_empty_ahead('b5e', 2) == false);
-assert(coordinate_empty_ahead('e1w', 1) == true);
-assert(coordinate_empty_ahead('e1s', 1) == false);
-assert(coordinate_empty_ahead('e1s', 3) == false);
+assert(coordinate_out_ahead('a1s', 1) == false);
+assert(coordinate_out_ahead('a1n', 1) == true);
+assert(coordinate_out_ahead('b3e', 2) == false);
+assert(coordinate_out_ahead('b5e', 2) == false);
+assert(coordinate_out_ahead('b5e', 3) == false);
+assert(coordinate_out_ahead('b5e', 4) == true);
+assert(coordinate_out_ahead('e1w', 1) == false);
+assert(coordinate_out_ahead('e1s', 1) == false);
+assert(coordinate_out_ahead('e1s', 3) == false);
+assert(coordinate_out_ahead('e1s', 5) == true);
 
 echo 'All OK.' . PHP_EOL;
