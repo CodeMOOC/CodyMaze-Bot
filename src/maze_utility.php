@@ -1,6 +1,8 @@
 <?php
 /* UTILITY FUNCTIONS FOR QUERYING THE MAZE STRUCTURE */
 
+require_once('data.php');
+
 const DEFAULT_MAZE = array(
     array(true , true , false, false, false),
     array(false, false, false, false, true ),
@@ -8,6 +10,27 @@ const DEFAULT_MAZE = array(
     array(true , false, false, false, false),
     array(false, false, true , false, false)
 );
+
+/*
+ * Creates a coordinate from indexes and a direction (single-char string).
+ */
+function coordinate_create($column, $row, $direction) {
+    if($column < 0 || $column >= BOARD_SIDE_SIZE) {
+        die('Column index out of range');
+    }
+    if($row < 0 || $row >= BOARD_SIDE_SIZE) {
+        die('Row index out of range');
+    }
+    if(!is_string($direction) || strlen($direction) != 1) {
+        die('Direction is not a single character string');
+    }
+
+    $ret  = chr(ord('a') + $column);
+    $ret .= $row;
+    $ret .= $direction;
+
+    return $ret;
+}
 
 function coordinate_to_column($coordinate) {
     if(strlen($coordinate) != 3) {

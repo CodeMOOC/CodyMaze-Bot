@@ -1,6 +1,7 @@
 <?php
 /* General data */
-define("BOARD_SIZE", 25);
+define('BOARD_SIDE_SIZE', 5);
+define('BOARD_SIZE', BOARD_SIDE_SIZE * BOARD_SIDE_SIZE);
 define("NUMBER_OF_GAMES", 3);
 
 $cardinal_code = array(
