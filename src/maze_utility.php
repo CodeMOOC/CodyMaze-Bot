@@ -14,11 +14,16 @@ function coordinate_to_column($coordinate) {
         die('Coordinate with ' . strlen($coordinate) . ' values');
     }
 
-    substr($coordinate, 0, 1)
+    int asciiCode = ord(substr($coordinate, 0, 1));
+    return asciiCode - ord('a');
 }
 
 function coordinate_to_row($coordinate) {
+    if(strlen($coordinate) != 3) {
+        die('Coordinate with ' . strlen($coordinate) . ' values');
+    }
 
+    return ((int)substr($coordinate, 1, 1)) - 1;
 }
 
 function coordinate_advance($coordinate) {
@@ -37,10 +42,6 @@ function coordinate_is_black($coordinate) {
 
 }
 
-function coordinate_empty_ahead($coordinate) {
-    return coordinate_empty_ahead($coordinate, 1);
-}
-
-function coordinate_empty_ahead($coordinate, $num) {
-
+function coordinate_empty_ahead($coordinate, $num = 1) {
+    
 }
