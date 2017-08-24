@@ -171,6 +171,35 @@ function coordinate_out_right($coordinate) {
     return coordinate_out_ahead(coordinate_turn_right($coordinate), 1);
 }
 
+/*
+ * Executes one step of the standard maze crawler algorithm,
+ * i.e., if empty ahead, advance,
+ *       if empty on preferred side, turn to preferred side,
+ *       else, turn on other side
+ * Guaranteed to work from all coordinates ✌
+ */
+function coordinate_standard_crawler($coordinate, $prefer_right = true) {
+    if(!coordinate_out_ahead($coordinate, 1)) {
+        return coordinate_advance($coordinate);
+    }
+    if($prefer_right) {
+        if(!coordinate_out_right($coordinate)) {
+            return coordinate_turn_right($coordinate);
+        }
+        else {
+            return coordinate_turn_left($coordinate);
+        }
+    }
+    else {
+        if(!coordinate_out_left($coordinate)) {
+            return coordinate_turn_left($coordinate);
+        }
+        else {
+            return coordinate_turn_right($coordinate);
+        }
+    }
+}
+
 function coordinate_find_initial_direction($position){
     global $cardinal_position_to_name_map;
 
