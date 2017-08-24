@@ -143,6 +143,10 @@ function coordinate_is_black($coordinate) {
 
 }
 
+/*
+ * Checks if executing an advance command the player would end up
+ * out of the board OR on a black QRCode
+ */
 function coordinate_empty_ahead($coordinate, $num = 1) {
 
     $new_coordinates = $coordinate;
@@ -150,9 +154,27 @@ function coordinate_empty_ahead($coordinate, $num = 1) {
     for($i = 0; $i < $num; $i++){
         $new_coordinates = coordinate_advance($new_coordinates);
         if(is_null($new_coordinates) || coordinate_is_black($new_coordinates)){
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
+}
+
+/*
+ * Checks if executing an advance command the player would end up
+ * out of the board
+ */
+function coordinate_out_ahead($coordinate, $num = 1) {
+
+    $new_coordinates = $coordinate;
+
+    for($i = 0; $i < $num; $i++){
+        $new_coordinates = coordinate_advance($new_coordinates);
+        if(is_null($new_coordinates)){
+            return true;
+        }
+    }
+
+    return false;
 }
