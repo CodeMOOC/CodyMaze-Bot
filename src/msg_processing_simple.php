@@ -11,6 +11,7 @@
 require_once('data.php');
 require_once('maze_generator.php');
 require_once('maze_commands.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // This file assumes to be included by pull.php or
 // hook.php right after receiving a new Telegram update.
@@ -31,11 +32,17 @@ if(isset($update['message'])) {
         // We got an incoming text message
         $text = $message['text'];
 
+        // Get user info to see if he has reached end of game
+        $user_info = db_scalar_query("SELECT * FROM user_status WHERE telegram_id = $chat_id");
+
         if (strpos($text, "/start") === 0) {
             Logger::debug("/start command");
 
             perform_command_start($chat_id, mb_strtolower($text));
             return;
+        } elseif (strpos($text, "/start") !== 0 && $user_info['completed'] == 0){
+            // User is probably writing name for certificate
+            request_name($chat_id, $user_info["name"]);
         }
         else {
             telegram_send_message($chat_id, "Non ho capito.");
@@ -90,6 +97,14 @@ if(isset($update['message'])) {
             Logger::error("Invalid callback data: {$callback_data}");
             telegram_send_message($chat_id, "Codice non valido. 😑");
         }
+    } elseif(strpos($callback_data, 'name ') === 0) {
+        $data = substr($message, 5);
+        if ($data === "error"){
+            // Request name again
+            telegram_send_message($chat_id, "Riscrivimi il tuo nome e cognome:\n");
+        } else {
+            send_pdf($chat_id, $data);
+        }
     }
     else {
         // Huh?
@@ -142,6 +157,9 @@ function perform_command_start($chat_id, $message)
 
 function start_command_new_conversation($chat_id){
     Logger::debug("Start new conversation");
+
+    // Insert new user into DB
+    db_perform_action("INSERT INTO user_status (telegram_id, completed) VALUES ($chat_id, 0)");
 
     // TODO: set proper message
     telegram_send_message($chat_id, "Ciao, sono il bot CodyMaze! 🤖\n\n Posizionati lungo il bordo della scacchiera e scansiona un QRCode!\n");
@@ -227,7 +245,24 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 }
 
 function end_of_game($chat_id){
-    telegram_send_message($chat_id, "Complimenti! Hai completato il CodyMaze!.\n\n");
+    telegram_send_message($chat_id, "Complimenti! Hai completato il CodyMaze!\n\n");
+    // TODO: ask for name
+    telegram_send_message($chat_id, "Scrivimi il nome e cognome da visualizzare sul certificato di completamento:\n");
+}
+
+function send_pdf($chat_id, $name){
+    $result = htmlToPdf($name);
+
+    if($result["pdf_valid"]== true){
+        $guid = $result["pdf_guid"];
+        $date = $result["pdf_date"];
+        db_perform_action("UPDATE user_status SET completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
+
+        // TODO: send pdf
+
+        // remove temp pdf
+        unlink($result["pdf_file"]);
+    }
 }
 
 function request_cardinal_position($chat_id){
@@ -244,6 +279,22 @@ function request_cardinal_position($chat_id){
                 ),
                 array(
                     array("text" => "Sud", "callback_data" => "card s"),
+                )
+            )
+        ))
+    );
+}
+
+function request_name($chat_id, $name){
+    // TODO: set proper text
+    telegram_send_message($chat_id, "Confermi che il nome inviato è {$name}?",
+        array("reply_markup" => array(
+            "inline_keyboard" => array(
+                array(
+                    array("text" => "Si", "callback_data" => "name {$name}"),
+                ),
+                array(
+                    array("text" => "No", "callback_data" => "name error"),
                 )
             )
         ))
