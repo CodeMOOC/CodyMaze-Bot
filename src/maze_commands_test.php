@@ -25,14 +25,12 @@ assert(command_2(123, 'a5n')[0] == 'd');
 // Command 3 (same as 1)
 
 // Command 4
-assert(command_4(123, 'd4w')[0] == 'd');
-assert(command_4(123, 'd4w')[1] == 'd4n');
-assert(command_4(123, 'a1n')[0] == 'd');
-assert(command_4(123, 'a1n')[1] == 'a1e');
-assert(command_4(123, 'e3e')[0] == 's');
-assert(command_4(123, 'e3e')[1] == 'e3n');
-assert(command_4(123, 'd4e')[0] == 's');
-assert(command_4(123, 'd4e')[1] == 'd4n');
+assert(command_4(123, 'd4w')[0] == 'da');
+assert(command_4(123, 'd4w')[1] == 'd3n');
+assert(command_4(123, 'a1n')[0] == 'da');
+assert(command_4(123, 'a1n')[1] == 'b1e');
+assert(command_4(123, 'd4e')[0] == 'sa');
+assert(command_4(123, 'd4e')[1] == 'd3n');
 
 // Command 5
 assert(command_5(123, 'a1e')[1] == 'c1e');
