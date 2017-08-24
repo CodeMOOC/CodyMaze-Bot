@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 23, 2017 at 03:54 PM
+-- Generation Time: Aug 24, 2017 at 08:26 AM
 -- Server version: 10.1.23-MariaDB-9+deb9u1
 -- PHP Version: 7.0.22-1~dotdeb+8.1
 
@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `moves` (
   `telegram_id` int(11) NOT NULL,
   `reached_on` datetime DEFAULT NULL,
-  `cell` char(2) CHARACTER SET ascii NOT NULL
+  `cell` char(3) CHARACTER SET ascii NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -37,14 +37,20 @@ CREATE TABLE `moves` (
 CREATE TABLE `user_status` (
   `telegram_id` int(11) NOT NULL,
   `completed` bit(1) NOT NULL DEFAULT b'0',
+  `completed_on` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `email` varchar(1024) DEFAULT NULL,
   `certificate_id` char(36) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `moves`
+--
+ALTER TABLE `moves`
+  ADD KEY `reached_on` (`reached_on`);
 
 --
 -- Indexes for table `user_status`
