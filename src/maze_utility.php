@@ -160,6 +160,7 @@ function coordinate_out_ahead($coordinate, $num = 1) {
     return false;
 }
 
+
 /* Checks whether the square left is over the maze board */
 function coordinate_out_left($coordinate) {
     return coordinate_out_ahead(coordinate_turn_left($coordinate), 1);
@@ -168,6 +169,35 @@ function coordinate_out_left($coordinate) {
 /* Checks whether the square right is over the maze board */
 function coordinate_out_right($coordinate) {
     return coordinate_out_ahead(coordinate_turn_right($coordinate), 1);
+}
+
+/*
+ * Executes one step of the standard maze crawler algorithm,
+ * i.e., if empty ahead, advance,
+ *       if empty on preferred side, turn to preferred side,
+ *       else, turn on other side
+ * Guaranteed to work from all coordinates ✌
+ */
+function coordinate_standard_crawler($coordinate, $prefer_right = true) {
+    if(!coordinate_out_ahead($coordinate, 1)) {
+        return coordinate_advance($coordinate);
+    }
+    if($prefer_right) {
+        if(!coordinate_out_right($coordinate)) {
+            return coordinate_turn_right($coordinate);
+        }
+        else {
+            return coordinate_turn_left($coordinate);
+        }
+    }
+    else {
+        if(!coordinate_out_left($coordinate)) {
+            return coordinate_turn_left($coordinate);
+        }
+        else {
+            return coordinate_turn_right($coordinate);
+        }
+    }
 }
 
 function coordinate_find_initial_direction($position){
@@ -190,4 +220,24 @@ function coordinate_find_initial_direction($position){
             return null;
         }
     }
+}
+
+/*
+ * Moves ahead as long as possible.
+ */
+function coordinate_move_to_end($coordinate) {
+    while(!coordinate_out_ahead($coordinate, 1)) {
+        $coordinate = coordinate_advance($coordinate);
+    }
+    return $coordinate;
+}
+
+function coordinate_max_ahead($coordinate) {
+    $i = 0;
+    do {
+        $i++;
+    }
+    while(!coordinate_out_ahead($coordinate, $i));
+
+    return $i-1;
 }
