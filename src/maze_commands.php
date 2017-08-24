@@ -1,4 +1,6 @@
 <?php
+require_once('maze_utility.php');
+
 /*
  * Nil command, does not execute any steps and returns the current coordinate.
  */
@@ -7,7 +9,15 @@ function command_nil($telegram_id, $current_coordinate) {
 }
 
 function command_1($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $target = coordinate_advance($current_coordinate);
+    if($target == null) {
+        Log:fatal('Cannot execute command_1 from position (null target)');
+    }
+
+    return array(
+        'a',
+        $target
+    );
 }
 
 function command_2($telegram_id, $current_coordinate) {
