@@ -11,6 +11,8 @@ const DEFAULT_MAZE = array(
     array(false, false, true , false, false)
 );
 
+const DIRECTIONS = 'nesw';
+
 /*
  * Creates a coordinate from indexes and a direction (single-char string).
  */
@@ -97,13 +99,38 @@ function coordinate_advance($coordinate) {
 
 function coordinate_turn_left($coordinate) {
 
+    $row = coordinate_to_row($coordinate);
+    $column = coordinate_to_column($coordinate);
+    $direction = coordinate_to_direction($coordinate);
+
+    $direction_index = strpos(DIRECTIONS, $direction);
+
+    $new_direction = substr(DIRECTIONS, ($direction_index == 0? 3: $direction_index - 1),1);
+
+    echo "{$column}-{$row}-{$new_direction}".PHP_EOL;
+    return coordinate_create($column, $row, $new_direction);
+
 }
 
 function coordinate_turn_right($coordinate) {
 
+    $row = coordinate_to_row($coordinate);
+    $column = coordinate_to_column($coordinate);
+    $direction = coordinate_to_direction($coordinate);
+
+    $direction_index = strpos(DIRECTIONS, $direction);
+
+    $new_direction = substr(DIRECTIONS, ($direction_index == 3? 0: $direction_index + 1),1);
+
+    return coordinate_create($column, $row, $new_direction);
 }
 
 function coordinate_is_black($coordinate) {
+
+    $row = coordinate_to_row($coordinate);
+    $column = coordinate_to_column($coordinate);
+
+    return DEFAULT_MAZE[$column][$row];
 
 }
 
