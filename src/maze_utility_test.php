@@ -54,33 +54,42 @@ assert(coordinate_turn_right('b3s') == 'b3w');
 assert(coordinate_turn_right('e4w') == 'e4n');
 
 assert(coordinate_is_black('a1n') == true);
-assert(coordinate_is_black('a2n') == true);
+assert(coordinate_is_black('a2n') == false);
 assert(coordinate_is_black('a3n') == false);
-assert(coordinate_is_black('a4n') == false);
+assert(coordinate_is_black('a4n') == true);
 assert(coordinate_is_black('a5n') == false);
 
-assert(coordinate_is_black('b1n') == false);
+assert(coordinate_is_black('b1n') == true);
 assert(coordinate_is_black('b2n') == false);
 assert(coordinate_is_black('b3n') == false);
 assert(coordinate_is_black('b4n') == false);
-assert(coordinate_is_black('b5n') == true);
+assert(coordinate_is_black('b5n') == false);
 
 assert(coordinate_is_black('c1n') == false);
 assert(coordinate_is_black('c2n') == false);
 assert(coordinate_is_black('c3n') == false);
 assert(coordinate_is_black('c4n') == false);
-assert(coordinate_is_black('c5n') == false);
+assert(coordinate_is_black('c5n') == true);
 
-assert(coordinate_is_black('d1n') == true);
+assert(coordinate_is_black('d1n') == false);
 assert(coordinate_is_black('d2n') == false);
 assert(coordinate_is_black('d3n') == false);
 assert(coordinate_is_black('d4n') == false);
 assert(coordinate_is_black('d5n') == false);
 
 assert(coordinate_is_black('e1n') == false);
-assert(coordinate_is_black('e2n') == false);
-assert(coordinate_is_black('e3n') == true);
+assert(coordinate_is_black('e2n') == true);
+assert(coordinate_is_black('e3n') == false);
 assert(coordinate_is_black('e4n') == false);
 assert(coordinate_is_black('e5n') == false);
+
+assert(coordinate_empty_ahead('a1s', 1) == true);
+assert(coordinate_empty_ahead('a1n', 1) == false);
+assert(coordinate_empty_ahead('b3e', 2) == true);
+assert(coordinate_empty_ahead('b5e', 2) == false);
+assert(coordinate_empty_ahead('e1w', 1) == true);
+assert(coordinate_empty_ahead('e1s', 1) == false);
+assert(coordinate_empty_ahead('e1s', 3) == false);
+
 
 echo 'All OK.' . PHP_EOL;
