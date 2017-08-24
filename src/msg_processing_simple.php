@@ -40,11 +40,15 @@ if(isset($update['message'])) {
 
             perform_command_start($chat_id, mb_strtolower($text));
             return;
-        } elseif (strpos($text, "/start") !== 0 && $user_info[1] == 0){
+        } elseif (strpos($text, "/reset") === 0){
+            db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
+            db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
+
+            telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\n Scrivi /start per ricomincare!");
+        } elseif (strpos($text, "/start") !== 0 && $user_info[1] == 0) {
             // User is probably writing name for certificate
             request_name($chat_id, $text);
-        }
-        else {
+        }else {
             telegram_send_message($chat_id, "Non ho capito.");
         }
     }
