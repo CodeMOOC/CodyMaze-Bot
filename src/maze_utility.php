@@ -106,8 +106,7 @@ function coordinate_turn_left($coordinate) {
     $direction_index = strpos(DIRECTIONS, $direction);
 
     $new_direction = substr(DIRECTIONS, ($direction_index == 0? 3: $direction_index - 1),1);
-
-    echo "{$column}-{$row}-{$new_direction}".PHP_EOL;
+    
     return coordinate_create($column, $row, $new_direction);
 
 }
