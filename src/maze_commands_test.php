@@ -40,4 +40,13 @@ assert(command_5(123, 'c3w')[1] == 'a3w');
 assert(command_5(123, 'd2s')[1] == 'd4s');
 assert(command_5(123, 'a5n')[1] == 'a3n');
 
+// Command 7
+$c7_1 = command_7(123, 'a1e');
+assert(strlen($c7_1[0]) >= 3 && strlen($c7_1[0]) <= 4);
+assert($c7_1 != null);
+
+$c7_2 = command_7(123, 'e4e');
+assert(strlen($c7_2[0]) >= 3 && strlen($c7_2[0]) <= 4);
+assert($c7_2 != null);
+
 echo 'All OK.' . PHP_EOL;
