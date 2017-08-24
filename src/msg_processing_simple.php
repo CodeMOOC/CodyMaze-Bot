@@ -42,7 +42,7 @@ if(isset($update['message'])) {
             return;
         } elseif (strpos($text, "/start") !== 0 && $user_info[1] == 0){
             // User is probably writing name for certificate
-            request_name($chat_id, $user_info[3]);
+            request_name($chat_id, $text);
         }
         else {
             telegram_send_message($chat_id, "Non ho capito.");
@@ -230,6 +230,8 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
             } else {
                 // Wrong answer - remove end of maze position tuple and send back to last position for new maze
                 $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
+                db_perform_action("UPDATE moves SET reached_on = NULL WHERE telegram_id = {$chat_id} ORDER BY reached_on DESC LIMIT 1");
+
                 Logger::debug("Success of remove query: {$success}");
 
                 $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
@@ -258,10 +260,10 @@ function send_pdf($chat_id, $name){
     if($result["pdf_valid"]== true){
         $guid = $result["pdf_guid"];
         $date = $result["pdf_date"];
-        db_perform_action("UPDATE user_status SET completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
+        db_perform_action("UPDATE user_status SET completed = 1,  completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
 
         // TODO: send pdf
-
+        telegram_send_document($chat_id, $result["pdf_file"], "Certificato di Completamento");
         // remove temp pdf
         unlink($result["pdf_file"]);
     }
