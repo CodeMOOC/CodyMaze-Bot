@@ -1,4 +1,5 @@
 <?php
+require_once('lib_log.php');
 require_once('maze_utility.php');
 
 /*
@@ -8,10 +9,15 @@ function command_nil($telegram_id, $current_coordinate) {
     return array('', $current_coordinate);
 }
 
+function command_safe($telegram_id, $current_coordinate) {
+    // TODO
+    return command_nil($telegram_id, $current_coordinate);
+}
+
 function command_1($telegram_id, $current_coordinate) {
     $target = coordinate_advance($current_coordinate);
     if($target == null) {
-        Log:fatal('Cannot execute command_1 from position (null target)');
+        Logger::fatal('Cannot execute command_1 from position (null target)');
     }
 
     return array(
@@ -20,20 +26,66 @@ function command_1($telegram_id, $current_coordinate) {
     );
 }
 
+/* Turn right or left (if ahead is not empty) */
 function command_2($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $possible_directions = array();
+    $possible_directions_coords = array();
+
+    $c_turned_right = coordinate_turn_right($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_right)){
+        $possible_directions_coords[]= $c_turned_right;
+        $possible_directions[]= 'd';
+    }
+
+    $c_turned_left = coordinate_turn_left($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_left)){
+        $possible_directions_coords[]= $c_turned_left;
+        $possible_directions[]= 's';
+    }
+
+    if(count($possible_directions) < 1) {
+        Logger::fatal('Cannot execute command_2 from position (no valid option)');
+    }
+
+    $direction_index = array_rand($possible_directions);
+
+    return array(
+        $possible_directions[$direction_index],
+        $possible_directions_coords[$direction_index]
+    );
 }
 
 function command_3($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    return command_1($telegram_id, $current_coordinate);
 }
 
 function command_4($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    if(!coordinate_out_ahead(coordinate_turn_left($current_coordinate), 3)) {
+        return array(
+            'sa',
+            coordinate_advance(coordinate_turn_left($current_coordinate))
+        );
+    }
+    else if(!coordinate_out_ahead(coordinate_turn_right($current_coordinate), 3)) {
+        return array(
+            'da',
+            coordinate_advance(coordinate_turn_right($current_coordinate))
+        );
+    }
+    else {
+        return command_safe($telegram_id, $current_coordinate);
+    }
 }
 
 function command_5($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    if(coordinate_out_ahead($current_coordinate, 2)){
+        Loger::fatal('Cannot execute command_5 from position (no valid path)');
+    }
+
+    return array(
+        '2{a}',
+        coordinate_advance(coordinate_advance($current_coordinate))
+    );
 }
 
 function command_6($telegram_id, $current_coordinate) {
