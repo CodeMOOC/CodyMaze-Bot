@@ -1,4 +1,5 @@
 <?php
+require_once('lib_log.php');
 require_once('maze_utility.php');
 
 /*
@@ -11,7 +12,7 @@ function command_nil($telegram_id, $current_coordinate) {
 function command_1($telegram_id, $current_coordinate) {
     $target = coordinate_advance($current_coordinate);
     if($target == null) {
-        Log:fatal('Cannot execute command_1 from position (null target)');
+        Logger::fatal('Cannot execute command_1 from position (null target)');
     }
 
     return array(
@@ -51,11 +52,29 @@ function command_2($telegram_id, $current_coordinate) {
 }
 
 function command_3($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    return command_1($telegram_id, $current_coordinate);
 }
 
 function command_4($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    if(!coordinate_out_ahead(coordinate_turn_left($current_coordinate), 2)) {
+        return array(
+            's',
+            coordinate_turn_left($current_coordinate)
+        );
+    }
+    else if(!coordinate_out_ahead(coordinate_turn_right($current_coordinate), 2)) {
+        return array(
+            'd',
+            coordinate_turn_right($current_coordinate)
+        );
+    }
+    
+    // Safety net
+    else {
+        Logger::error('User moved to position ' . $current_coordinate . ' in which no turn is possible at step 4');
+
+        return command_nil($telegram_id, $current_coordinate);
+    }
 }
 
 function command_5($telegram_id, $current_coordinate) {
