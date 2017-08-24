@@ -23,6 +23,7 @@ assert(coordinate_to_row('c5e') == 4);
 assert(coordinate_to_row('d1s') == 0);
 assert(coordinate_to_row('e4w') == 3);
 
+
 assert(coordinate_advance('a1n') == null);
 assert(coordinate_advance('a1s') == 'a2s');
 assert(coordinate_advance('a2s') == 'a3s');
@@ -36,5 +37,50 @@ assert(coordinate_advance('c3e') == 'd3e');
 assert(coordinate_advance('c3w') == 'b3w');
 assert(coordinate_advance('c3s') == 'c4s');
 assert(coordinate_advance('a5s') == null);
+
+assert(coordinate_to_direction('a1n') == 'n');
+assert(coordinate_to_direction('b3s') == 's');
+assert(coordinate_to_direction('c5e') == 'e');
+assert(coordinate_to_direction('e4w') == 'w');
+
+assert(coordinate_turn_left('a1n') == 'a1w');
+assert(coordinate_turn_left('c5e') == 'c5n');
+assert(coordinate_turn_left('b3s') == 'b3e');
+assert(coordinate_turn_left('e4w') == 'e4s');
+
+assert(coordinate_turn_right('a1n') == 'a1e');
+assert(coordinate_turn_right('c5e') == 'c5s');
+assert(coordinate_turn_right('b3s') == 'b3w');
+assert(coordinate_turn_right('e4w') == 'e4n');
+
+assert(coordinate_is_black('a1n') == true);
+assert(coordinate_is_black('a2n') == true);
+assert(coordinate_is_black('a3n') == false);
+assert(coordinate_is_black('a4n') == false);
+assert(coordinate_is_black('a5n') == false);
+
+assert(coordinate_is_black('b1n') == false);
+assert(coordinate_is_black('b2n') == false);
+assert(coordinate_is_black('b3n') == false);
+assert(coordinate_is_black('b4n') == false);
+assert(coordinate_is_black('b5n') == true);
+
+assert(coordinate_is_black('c1n') == false);
+assert(coordinate_is_black('c2n') == false);
+assert(coordinate_is_black('c3n') == false);
+assert(coordinate_is_black('c4n') == false);
+assert(coordinate_is_black('c5n') == false);
+
+assert(coordinate_is_black('d1n') == true);
+assert(coordinate_is_black('d2n') == false);
+assert(coordinate_is_black('d3n') == false);
+assert(coordinate_is_black('d4n') == false);
+assert(coordinate_is_black('d5n') == false);
+
+assert(coordinate_is_black('e1n') == false);
+assert(coordinate_is_black('e2n') == false);
+assert(coordinate_is_black('e3n') == true);
+assert(coordinate_is_black('e4n') == false);
+assert(coordinate_is_black('e5n') == false);
 
 echo 'All OK.' . PHP_EOL;
