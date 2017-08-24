@@ -5,5 +5,75 @@
     /*border: 10px solid #cf6cad;*/
     background-image: url("../images/codymaze.png");
     background-size: 1145px 770px;
-    color: #cf6cad;
+    color: black;
+}
+
+#container span {
+    display: block;
+}
+
+.spaced {
+    padding-top: 350px;
+    display: block;
+}
+
+.padded {
+    padding: 0px 150px 0px 150px;
+    display: block;
+}
+
+.font-10 {
+    font-size: 7px;
+}
+
+.font-15 {
+    font-size: 12px;
+}
+
+.font-20 {
+    font-size: 17px;
+}
+
+.font-25 {
+    font-size: 22px;
+}
+
+.font-30 {
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+    margin: 0.6em 0;
+}
+
+#container span:last-child {
+    margin: 0.6em 0 0 0;
+}
+
+#signature {
+    padding-left: 670px;
+    text-align: left;
+}
+
+/* unvisited link */
+a:link {
+    color: black;
+}
+
+/* visited link */
+a:visited {
+    color: black;
+}
+
+/* mouse over link */
+a:hover {
+    color: black;
+}
+
+/* selected link */
+a:active {
+    color: black;
+}
+
+@media print {
+
 }

@@ -1,16 +1,17 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 use Knp\Snappy\Pdf;
 
 function htmlToPdf($name) {
     $guid = GUID();
-    $date = date("Y-m-d H:i:s", time());
+    $date = date("Y-m-d", time());
 
     require "pdf-template.php"; // Needed to generate static HTML page - Snappy won't read .php files
 
     // Prepare pdf generator
     //$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
-    $snappy = new Pdf('wkhtmltopdf');
-    //$snappy = new Pdf('wkhtmltox/bin/wkhtmltopdf');
+    //$snappy = new Pdf('wkhtmltopdf');
+    $snappy = new Pdf('wkhtmltox/bin/wkhtmltopdf');
     $snappy->setOption('orientation', 'Landscape');
     $snappy->setOption('page-size', 'A4');
     $snappy->setOption('no-pdf-compression', false);
@@ -53,3 +54,5 @@ function GUID()
 
     return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 }
+
+// to test: htmlToPdf("Brendan Paolini");

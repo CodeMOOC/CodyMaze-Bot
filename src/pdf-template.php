@@ -10,10 +10,10 @@ ob_start();
     <body>
 
     <div id="container">
+        <span class="spaced font-20">Questo certificato attesta che</span>
         <span class="font-30"><?= $name ?></span>
-        <span class="font-30"><?= $date ?></span>
-        <span class="font-30"><?= $guid ?></span>
-
+        <span class="font-20 padded">ha concluso con successo l'attività dell'ora di coding con CodyMaze sperimentando le istruzioni elementari, le istruzioni in sequenza, le condizioni, le ripetizioni e le ripetizioni condizionate.</span>
+        <span class="font-20 padded">Questo certificato, rilasciato in data <?= $date ?>, ha l'identificativo <?= $guid ?></span>
     </div>
 
     </body>
