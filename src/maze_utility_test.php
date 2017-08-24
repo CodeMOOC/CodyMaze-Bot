@@ -1,6 +1,9 @@
 <?php
-require('maze_utility.php');
+require_once('maze_utility.php');
 
+error_reporting(E_ALL);
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_BAIL, 1);
 assert(coordinate_to_column('a1n') == 0);
 assert(coordinate_to_column('b3s') == 1);
 assert(coordinate_to_column('c5e') == 2);
