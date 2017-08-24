@@ -150,7 +150,7 @@ function coordinate_is_black($coordinate) {
 function coordinate_out_ahead($coordinate, $num = 1) {
     $new_coordinates = $coordinate;
 
-    for($i = 0; $i < $num; $i++){
+    for($i = 0; $i < $num; $i++) {
         $new_coordinates = coordinate_advance($new_coordinates);
         if(is_null($new_coordinates)) {
             return true;
@@ -158,4 +158,14 @@ function coordinate_out_ahead($coordinate, $num = 1) {
     }
 
     return false;
+}
+
+/* Checks whether the square left is over the maze board */
+function coordinate_out_left($coordinate) {
+    return coordinate_out_ahead(coordinate_turn_left($coordinate), 1);
+}
+
+/* Checks whether the square right is over the maze board */
+function coordinate_out_right($coordinate) {
+    return coordinate_out_ahead(coordinate_turn_right($coordinate), 1);
 }
