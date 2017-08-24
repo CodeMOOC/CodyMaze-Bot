@@ -89,7 +89,41 @@ function command_5($telegram_id, $current_coordinate) {
 }
 
 function command_6($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    $possible_directions = array();
+    $possible_directions_coords = array();
+    $possible_advancements = array();
+
+    $c_turned_right = coordinate_turn_right($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_right)){
+        $possible_directions_coords []= $c_turned_right;
+        $possible_directions []= 'd';
+        $possible_advancements []=  coordinate_max_ahead($c_turned_right);
+    }
+
+    $c_turned_left = coordinate_turn_left($current_coordinate);
+    if(!coordinate_out_ahead($c_turned_left)){
+        $possible_directions_coords []= $c_turned_left;
+        $possible_directions []= 's';
+        $possible_advancements []=  coordinate_max_ahead($c_turned_left);
+    }
+
+    if(count($possible_directions) < 1) {
+        Logger::fatal('Cannot execute command_6 from position (no valid option)');
+    }
+
+    $direction_index = array_rand($possible_directions);
+
+    $new_coordinates = $possible_directions_coords[$direction_index];
+    for($i=0; $i < $possible_advancements[$direction_index]; $i++){
+        $new_coordinates = coordinate_advance($new_coordinates);
+    }
+
+    return array(
+        $possible_directions[$direction_index]." ".$possible_advancements[$direction_index]."{a}",
+        $new_coordinates
+    );
+
+
 }
 
 function command_7($telegram_id, $current_coordinate) {

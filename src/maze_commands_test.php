@@ -40,6 +40,16 @@ assert(command_5(123, 'c3w')[1] == 'a3w');
 assert(command_5(123, 'd2s')[1] == 'd4s');
 assert(command_5(123, 'a5n')[1] == 'a3n');
 
+// Command 6
+assert(command_6(123, 'a1e')[0] == 'd 4{a}');
+assert(command_6(123, 'a1e')[1] == 'a5s');
+assert(command_6(123, 'c1w')[0] == 's 4{a}');
+assert(command_6(123, 'c1w')[1] == 'c5s');
+$tc = command_6(123, 'b3w'); assert($tc[0] == 's 2{a}' || $tc[0] == 'd 2{a}');
+$tc = command_6(123, 'b3w'); assert($tc[1] == 'b1n' || $tc[1] == 'b5s');
+$tc = command_6(123, 'd4n'); assert($tc[0] == 's 3{a}' || $tc[0] == 'd 1{a}');
+$tc = command_6(123, 'd4n'); assert($tc[1] == 'e4e' || $tc[1] == 'a4w');
+
 // Command 7
 $c7_1 = command_7(123, 'a1e');
 assert(strlen($c7_1[0]) >= 3 && strlen($c7_1[0]) <= 4);
@@ -48,5 +58,6 @@ assert($c7_1 != null);
 $c7_2 = command_7(123, 'e4e');
 assert(strlen($c7_2[0]) >= 3 && strlen($c7_2[0]) <= 4);
 assert($c7_2 != null);
+
 
 echo 'All OK.' . PHP_EOL;
