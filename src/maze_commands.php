@@ -122,8 +122,6 @@ function command_6($telegram_id, $current_coordinate) {
         $possible_directions[$direction_index] . $possible_advancements[$direction_index] . '{a}',
         $new_coordinates
     );
-
-
 }
 
 function command_7_internal($current_coordinate, $turn_command, $turn_callable) {
@@ -226,7 +224,7 @@ function command_10($telegram_id, $current_coordinate, $count = null) {
     }
 
     return array(
-        "{$count}{se(strada davanti){a}se(strada a dx){d}altrimenti{s}}",
+        "{$count}{se(strada davanti){a}altrimenti{se(strada a dx){d}altrimenti{s}}}",
         $final_coordinates
     );
 }
@@ -243,7 +241,7 @@ function command_11($telegram_id, $current_coordinate, $count = null) {
     }
 
     return array(
-        "{$count}{se(strada davanti){a}se(strada a sx){s}altrimenti{d}}",
+        "{$count}{se(strada davanti){a}altrimenti{se(strada a sx){s}altrimenti{d}}}",
         $final_coordinates
     );
 }
@@ -262,7 +260,7 @@ function command_13($telegram_id, $current_coordinate) {
     }
 
     return array(
-        "finché(non stella){se(strada davanti){a}se(strada a dx){d}altrimenti{s}}",
+        "finché(non stella){se(strada davanti){a}altrimenti{se(strada a dx){d}altrimenti{s}}}",
         $final_coordinate
     );
 }

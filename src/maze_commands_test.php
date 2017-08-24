@@ -41,13 +41,13 @@ assert(command_5(123, 'd2s')[1] == 'd4s');
 assert(command_5(123, 'a5n')[1] == 'a3n');
 
 // Command 6
-assert(command_6(123, 'a1e')[0] == 'd 4{a}');
+assert(command_6(123, 'a1e')[0] == 'd4{a}');
 assert(command_6(123, 'a1e')[1] == 'a5s');
-assert(command_6(123, 'c1w')[0] == 's 4{a}');
+assert(command_6(123, 'c1w')[0] == 's4{a}');
 assert(command_6(123, 'c1w')[1] == 'c5s');
-$tc = command_6(123, 'b3w'); assert($tc[0] == 's 2{a}' || $tc[0] == 'd 2{a}');
+$tc = command_6(123, 'b3w'); assert($tc[0] == 's2{a}' || $tc[0] == 'd2{a}');
 $tc = command_6(123, 'b3w'); assert($tc[1] == 'b1n' || $tc[1] == 'b5s');
-$tc = command_6(123, 'd4n'); assert($tc[0] == 's 3{a}' || $tc[0] == 'd 1{a}');
+$tc = command_6(123, 'd4n'); assert($tc[0] == 's3{a}' || $tc[0] == 'd1{a}');
 $tc = command_6(123, 'd4n'); assert($tc[1] == 'e4e' || $tc[1] == 'a4w');
 
 // Command 7
@@ -82,14 +82,14 @@ assert(command_9(123, 'd3s')[1] == 'c3w');
 
 // Command 10
 $c10_1 = command_10(123, 'a1e', 5);
-assert($c10_1[0] == '5{se(strada davanti){a}se(strada a dx){d}altrimenti{s}}');
+assert($c10_1[0] == '5{se(strada davanti){a}altrimenti{se(strada a dx){d}altrimenti{s}}}');
 assert($c10_1[1] == 'e1s');
 assert(command_10(123, 'c3w', 4)[1] == 'a2n');
 assert(command_10(123, 'e5e', 5)[1] == 'e1n');
 
 // Command 11
 $c11_1 = command_11(123, 'a1e', 5);
-assert($c11_1[0] == '5{se(strada davanti){a}se(strada a sx){s}altrimenti{d}}');
+assert($c11_1[0] == '5{se(strada davanti){a}altrimenti{se(strada a sx){s}altrimenti{d}}}');
 assert($c11_1[1] == 'e1s');
 assert(command_11(123, 'c3w', 4)[1] == 'a4s');
 assert(command_11(123, 'e5e', 5)[1] == 'e1n');
