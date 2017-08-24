@@ -32,7 +32,7 @@ if(isset($update['message'])) {
         $text = $message['text'];
 
         // Get user info to see if he has reached end of game
-        $user_info = db_scalar_query("SELECT * FROM user_status WHERE telegram_id = $chat_id");
+        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id");
 
         if (strpos($text, "/start") === 0) {
             Logger::debug("/start command");
