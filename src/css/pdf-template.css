@@ -1,0 +1,9 @@
+#container {
+    width: 1145px;
+    height: 770px;
+    text-align: center;
+    /*border: 10px solid #cf6cad;*/
+    background-image: url("../images/codymaze.png");
+    background-size: 1145px 770px;
+    color: #cf6cad;
+}
