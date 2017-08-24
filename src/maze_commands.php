@@ -38,14 +38,16 @@ function command_2($telegram_id, $current_coordinate) {
         $possible_directions[]= 's';
     }
 
+    if(count($possible_directions) < 1) {
+        Log:fatal('Cannot execute command_2 from position (no valid option)');
+    }
+
     $direction_index = array_rand($possible_directions);
 
     return array(
         $possible_directions[$direction_index],
         $possible_directions_coords[$direction_index]
     );
-
-
 }
 
 function command_3($telegram_id, $current_coordinate) {
