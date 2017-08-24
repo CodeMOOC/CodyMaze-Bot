@@ -126,7 +126,45 @@ function command_6($telegram_id, $current_coordinate) {
 
 }
 
+function command_7_internal($current_coordinate, $turn_command, $turn_callable) {
+    $final_coordinates = $current_coordinate;
+    $count = 0;
+
+    for($count = 0; $count < 3; ++$count) {
+        $tentative_target = coordinate_advance(call_user_func($turn_callable, $final_coordinates));
+        if($tentative_target == null) {
+            // Would go off-board
+            break;
+        }
+
+        $final_coordinates = $tentative_target;
+    }
+
+    if($count == 0) {
+        Logger::error('Whops, 0 repeats');
+    }
+
+    return array(
+        "{$count}{{$turn_command}a}",
+        $final_coordinates
+    );
+}
+
 function command_7($telegram_id, $current_coordinate) {
+    if(coordinate_out_left($current_coordinate)) {
+        // Pick right side
+        return command_7_internal($current_coordinate, 'd', function($coord) {
+            return coordinate_turn_right($coord);
+        });
+    }
+    else {
+        // Pick left side
+        return command_7_internal($current_coordinate, 's', function($coord) {
+            return coordinate_turn_left($coord);
+        });
+    }
+
+
     $command = '';
     $final_coordinates = $current_coordinate;
     while(true) {
