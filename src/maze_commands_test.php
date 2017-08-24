@@ -69,5 +69,11 @@ assert(command_8(123, 'b1e')[1] == 'b2s');
 assert(command_8(123, 'd3s')[0] == 'se[bianco]{da}');
 assert(command_8(123, 'd3s')[1] == 'c3w');
 
+// Command 10
+$c10_1 = command_10(123, 'a1e', 5);
+assert($c10_1[0] == '5{se(strada davanti){a}se(strada a dx){d}altrimenti{s}}');
+assert($c10_1[1] == 'e1s');
+assert(command_10(123, 'c3w', 4)[1] == 'a2n');
+assert(command_10(123, 'e5e', 5)[1] == 'e1n');
 
 echo 'All OK.' . PHP_EOL;
