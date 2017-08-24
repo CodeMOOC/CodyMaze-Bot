@@ -60,23 +60,23 @@ assert($c7_2[0] == '3{sa}');
 assert($c7_2[1] == 'd4s');
 
 //Command 8
-assert(command_8(123, 'a1w')[0] == 'se[nero]{sa}');
+assert(command_8(123, 'a1w')[0] == 'se(stella){sa}');
 assert(command_8(123, 'a1w')[1] == 'a2s');
-assert(command_8(123, 'e5n')[0] == 'se[bianco]{sa}');
+assert(command_8(123, 'e5n')[0] == 'se(non stella){sa}');
 assert(command_8(123, 'e5n')[1] == 'd5w');
-assert(command_8(123, 'b1e')[0] == 'se[nero]{da}');
+assert(command_8(123, 'b1e')[0] == 'se(stella){da}');
 assert(command_8(123, 'b1e')[1] == 'b2s');
-assert(command_8(123, 'd3s')[0] == 'se[bianco]{da}');
+assert(command_8(123, 'd3s')[0] == 'se(non stella){da}');
 assert(command_8(123, 'd3s')[1] == 'c3w');
 
 //Command 9
-assert(command_9(123, 'a1w')[0] == 'se[nero]{sa}altrimenti{da}');
+assert(command_9(123, 'a1w')[0] == 'se(stella){sa}altrimenti{da}');
 assert(command_9(123, 'a1w')[1] == 'a2s');
-assert(command_9(123, 'e5n')[0] == 'se[nero]{da}altrimenti{sa}');
+assert(command_9(123, 'e5n')[0] == 'se(stella){da}altrimenti{sa}');
 assert(command_9(123, 'e5n')[1] == 'd5w');
-assert(command_9(123, 'b1e')[0] == 'se[nero]{da}altrimenti{sa}');
+assert(command_9(123, 'b1e')[0] == 'se(stella){da}altrimenti{sa}');
 assert(command_9(123, 'b1e')[1] == 'b2s');
-assert(command_9(123, 'd3s')[0] == 'se[nero]{sa}altrimenti{da}');
+assert(command_9(123, 'd3s')[0] == 'se(stella){sa}altrimenti{da}');
 assert(command_9(123, 'd3s')[1] == 'c3w');
 
 
@@ -93,6 +93,7 @@ assert($c11_1[0] == '5{se(strada davanti){a}se(strada a sx){s}altrimenti{d}}');
 assert($c11_1[1] == 'e1s');
 assert(command_11(123, 'c3w', 4)[1] == 'a4s');
 assert(command_11(123, 'e5e', 5)[1] == 'e1n');
+assert(command_11(123, 'e5s', 5)[1] == 'a5w');
 
 // Command 12
 assert(command_12(123, 'b2e')[1] == 'e2e');
