@@ -26,7 +26,7 @@ function coordinate_create($column, $row, $direction) {
     }
 
     $ret  = chr(ord('a') + $column);
-    $ret .= $row;
+    $ret .= ($row + 1);
     $ret .= $direction;
 
     return $ret;
