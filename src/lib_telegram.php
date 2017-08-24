@@ -127,6 +127,26 @@ function telegram_send_photo($chat_id, $photo_id, $caption, $parameters = null) 
     return perform_telegram_request($handle);
 }
 
+function telegram_send_document($chat_id, $doc_id, $caption = null, $parameters = null) {
+    if(!$doc_id) {
+        Logger::error('Path to attached photo must be set', __FILE__);
+        return false;
+    }
+    // Photo is remote if URL or non-existing file identifier is used
+    $is_remote = (stripos($doc_id, 'http') === 0) || !file_exists($doc_id);
+
+    $parameters = prepare_parameters($parameters, array(
+        'chat_id' => $chat_id,
+        'caption' => $caption
+    ));
+
+    $handle = prepare_curl_api_request(TELEGRAM_API_URI_BASE . 'sendDocument', 'POST', $parameters, array(
+        'document' => ($is_remote) ? $doc_id : new CURLFile($doc_id)
+    ));
+
+    return perform_telegram_request($handle);
+}
+
 /**
  * Sends a Telegram chat action update.
  * https://core.telegram.org/bots/api#sendchataction
