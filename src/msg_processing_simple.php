@@ -150,11 +150,21 @@ function start_command_new_conversation($chat_id){
 function start_command_first_step($chat_id, $board_pos){
     Logger::debug("Start first step");
     // TODO: ask user to look in certain direction
-    $cardinal_pos = "[caridinal_pos]";
-    $row_column_pos = substr($board_pos, 0, 2);
-    // TODO: set text
-    telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in {$row_column_pos}! Ora dovresti posizionarti in modo da guardare verso {$cardinal_pos} se non lo stai già facendo.\n\n");
-    start_command_continue_conversation($chat_id, $board_pos);
+    $cardinal_pos = coordinate_find_initial_direction($board_pos);
+    if($cardinal_pos == null){
+        // Remove record and warn user of wrong position
+        $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND cell = '{$board_pos}'");
+        Logger::debug("Removed record on wrong beginning position: {$success}");
+
+        // TODO: set text
+        telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.\n");
+    } else {
+        $row_column_pos = substr($board_pos, 0, 2);
+        // TODO: set text
+        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in {$row_column_pos}! Ora dovresti posizionarti in modo da guardare verso {$cardinal_pos} se non lo stai già facendo.\n\n");
+        request_cardinal_position($chat_id);
+        //start_command_continue_conversation($chat_id, $board_pos);
+    }
 }
 
 function start_command_continue_conversation($chat_id, $user_position_id = null){
@@ -176,10 +186,11 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
     // Else he has to start a new maze
     // AND if position is == NUMBER_OF_GAMES, it's the end of the game
     $has_null_timestamp = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
-    Logger::debug("Cell with null timestamp: {$has_null_timestamp}");
 
     if($user_game_status < NUMBER_OF_GAMES) {
         if ($has_null_timestamp !== null || $has_null_timestamp !== false) {
+            Logger::debug("Cell timestamp is not null.");
+
             $answer = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL LIMIT 1");
             Logger::debug("Expecting answer: {$answer}");
 
@@ -207,6 +218,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
             }
         } else {
             // Request cardinal position
+            Logger::debug("Cell with null timestamp: {$has_null_timestamp}");
             request_cardinal_position($chat_id);
         }
     } else {
