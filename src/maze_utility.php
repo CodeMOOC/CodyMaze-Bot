@@ -14,8 +14,8 @@ function coordinate_to_column($coordinate) {
         die('Coordinate with ' . strlen($coordinate) . ' values');
     }
 
-    int asciiCode = ord(substr($coordinate, 0, 1));
-    return asciiCode - ord('a');
+    $asciiCode = ord(substr($coordinate, 0, 1));
+    return $asciiCode - ord('a');
 }
 
 function coordinate_to_row($coordinate) {
