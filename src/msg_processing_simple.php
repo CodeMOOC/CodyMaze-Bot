@@ -238,7 +238,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
                 Logger::debug("Success of remove query: {$success}");
 
-                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL ORDER BY reached_on DESC LIMIT 1");
                 // TODO: set correct text
                 telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione {$beginning_position} e prova un nuovo labirinto.\n");
             }
