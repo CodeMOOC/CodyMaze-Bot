@@ -59,7 +59,14 @@ function command_4($telegram_id, $current_coordinate) {
 }
 
 function command_5($telegram_id, $current_coordinate) {
-    command_nil($telegram_id, $current_coordinate);
+    if(coordinate_out_ahead($current_coordinate, 2)){
+        Log:fatal('Cannot execute command_5 from position (no valid path)');
+    }
+
+    return array(
+        '2{a}',
+        coordinate_advance(coordinate_advance($current_coordinate))
+    );
 }
 
 function command_6($telegram_id, $current_coordinate) {
