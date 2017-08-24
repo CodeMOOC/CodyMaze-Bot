@@ -98,4 +98,12 @@ assert(coordinate_out_ahead('e1s', 1) == false);
 assert(coordinate_out_ahead('e1s', 3) == false);
 assert(coordinate_out_ahead('e1s', 5) == true);
 
+assert(coordinate_max_ahead('a3e') == 4);
+assert(coordinate_max_ahead('e3e') == 0);
+assert(coordinate_max_ahead('d2w') == 3);
+assert(coordinate_max_ahead('b4n') == 3);
+assert(coordinate_max_ahead('c3n') == 2);
+assert(coordinate_max_ahead('a4s') == 1);
+
+
 echo 'All OK.' . PHP_EOL;
