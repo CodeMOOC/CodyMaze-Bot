@@ -7,6 +7,8 @@
  * Support library. Don't change a thing here.
  */
 
+require_once('lib_utility.php');
+
 class Logger {
 
     const SEVERITY_DEBUG = 1;
