@@ -83,16 +83,26 @@ function perform_command_start($chat_id, $message)
     Logger::debug("Start command");
 
     // Get user's initial status from db
-    $user_status = db_row_query("SELECT * FROM moves WHERE telegram_id = {$chat_id} LIMIT 1");
-    Logger::debug("Telegram user status: {$user_status[0]}");
+    $user_status = db_scalar_query("SELECT telegram_id FROM moves WHERE telegram_id = {$chat_id} LIMIT 1");
+    Logger::debug("Telegram user: {$user_status}");
+
+    $last_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+    Logger::debug("User's last position: {$last_position}");
+
+    $has_null_timestamp = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
+    Logger::debug("User has null timestamp: {$has_null_timestamp}");
 
     // Get current time
     $ts = date("Y-m-d H:i:s", time());
+
     // Board position from qr mapping
     $board_pos = substr($message, 7);
-    // Add user's new position to db
-    $success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, '$ts', '$board_pos')");
-    Logger::debug("Success of insertion query: {$success}");
+
+    // Add user's new position to db if new position
+    if(strcmp($last_position, $board_pos) !== 0 && ($has_null_timestamp === null || $has_null_timestamp === false)) {
+        $success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, '$ts', '$board_pos')");
+        Logger::debug("Success of insertion query: {$success}");
+    }
 
     // if new user, start new conversation - else restore game status for user
     if($user_status === null || $user_status === false)
@@ -136,7 +146,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
             Logger::debug("Expecting answer: {$answer[0]}");
 
             // Check for correct answer and update db
-            if(strcmp($answer[0], $user_position_id)){
+            if(strcmp($answer[0], $user_position_id) === 0){
                 // Correct answer - continue or end game if reached last maze
                 $ts = date("Y-m-d H:i:s", time());
                 db_perform_action("UPDATE moves SET reached_on = '$ts' WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
@@ -148,10 +158,13 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
                     request_cardinal_position($chat_id);
                 }
             } else {
-                // Wrong answer - send back to last position for new maze
-                $beginning_position = db_row_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+                // Wrong answer - remove end of maze position tuple and send back to last position for new maze
+                $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
+                Logger::debug("Success of remove query: {$success}");
+
+                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
                 // TODO: set correct text
-                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione {$beginning_position[0]} e prova un nuovo labirinto.\n");
+                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione {$beginning_position} e prova un nuovo labirinto.\n");
             }
         }
     } else {
