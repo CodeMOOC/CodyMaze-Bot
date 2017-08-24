@@ -20,4 +20,11 @@ assert(command_2(123, 'e5w')[0] == 'd');
 assert(command_2(123, 'a5n')[1] == 'a5e');
 assert(command_2(123, 'a5n')[0] == 'd');
 
+assert(command_5(123, 'a1e')[1] == 'c1e');
+assert(command_5(123, 'a1e')[0] == '2{a}');
+assert(command_5(123, 'c5e')[1] == 'e5e');
+assert(command_5(123, 'c3w')[1] == 'a3w');
+assert(command_5(123, 'd2s')[1] == 'd4s');
+assert(command_5(123, 'a5n')[1] == 'a3n');
+
 echo 'All OK.' . PHP_EOL;
