@@ -69,6 +69,17 @@ assert(command_8(123, 'b1e')[1] == 'b2s');
 assert(command_8(123, 'd3s')[0] == 'se[bianco]{da}');
 assert(command_8(123, 'd3s')[1] == 'c3w');
 
+//Command 9
+assert(command_9(123, 'a1w')[0] == 'se[nero]{sa}altrimenti{da}');
+assert(command_9(123, 'a1w')[1] == 'a2s');
+assert(command_9(123, 'e5n')[0] == 'se[nero]{da}altrimenti{sa}');
+assert(command_9(123, 'e5n')[1] == 'd5w');
+assert(command_9(123, 'b1e')[0] == 'se[nero]{da}altrimenti{sa}');
+assert(command_9(123, 'b1e')[1] == 'b2s');
+assert(command_9(123, 'd3s')[0] == 'se[nero]{sa}altrimenti{da}');
+assert(command_9(123, 'd3s')[1] == 'c3w');
+
+
 // Command 10
 $c10_1 = command_10(123, 'a1e', 5);
 assert($c10_1[0] == '5{se(strada davanti){a}se(strada a dx){d}altrimenti{s}}');
