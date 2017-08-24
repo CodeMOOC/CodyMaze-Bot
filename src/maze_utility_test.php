@@ -23,4 +23,18 @@ assert(coordinate_to_row('c5e') == 4);
 assert(coordinate_to_row('d1s') == 0);
 assert(coordinate_to_row('e4w') == 3);
 
+assert(coordinate_advance('a1n') == null);
+assert(coordinate_advance('a1s') == 'a2s');
+assert(coordinate_advance('a2s') == 'a3s');
+assert(coordinate_advance('a5s') == null);
+assert(coordinate_advance('a1w') == null);
+assert(coordinate_advance('e2e') == null);
+assert(coordinate_advance('e5s') == null);
+assert(coordinate_advance('e5w') == 'd5w');
+assert(coordinate_advance('c3n') == 'c2n');
+assert(coordinate_advance('c3e') == 'd3e');
+assert(coordinate_advance('c3w') == 'b3w');
+assert(coordinate_advance('c3s') == 'c4s');
+assert(coordinate_advance('a5s') == null);
+
 echo 'All OK.' . PHP_EOL;

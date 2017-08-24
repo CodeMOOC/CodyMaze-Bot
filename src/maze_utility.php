@@ -49,8 +49,50 @@ function coordinate_to_row($coordinate) {
     return ((int)substr($coordinate, 1, 1)) - 1;
 }
 
-function coordinate_advance($coordinate) {
+function coordinate_to_direction($coordinate) {
+    if(strlen($coordinate) != 3) {
+        die('Coordinate with ' . strlen($coordinate) . ' values');
+    }
 
+    return substr($coordinate, 2, 1);
+}
+
+function coordinate_advance($coordinate) {
+    $c = coordinate_to_column($coordinate);
+    $r = coordinate_to_row($coordinate);
+    $dir = coordinate_to_direction($coordinate);
+
+    switch($dir) {
+        case 'n':
+            if($r <= 0)
+                return null;
+            else
+                return coordinate_create($c, $r-1, $dir);
+            break;
+
+        case 'e':
+            if($c >= BOARD_SIDE_SIZE - 1)
+                return null;
+            else
+                return coordinate_create($c+1, $r, $dir);
+            break;
+
+        case 's':
+            if($r >= BOARD_SIDE_SIZE - 1)
+                return null;
+            else
+                return coordinate_create($c, $r+1, $dir);
+            break;
+
+        case 'w':
+            if($c <= 0)
+                return null;
+            else
+                return coordinate_create($c-1, $r, $dir);
+            break;
+    }
+
+    die('Invalid direction');
 }
 
 function coordinate_turn_left($coordinate) {
@@ -66,5 +108,5 @@ function coordinate_is_black($coordinate) {
 }
 
 function coordinate_empty_ahead($coordinate, $num = 1) {
-    
+
 }
