@@ -61,7 +61,7 @@ function perform_command_start($chat_id, $message)
         }
         return;
     }
-    
+
     // Get user's position from db if available
     $user_status = db_scalar_query("SELECT telegram_id FROM moves WHERE telegram_id = {$chat_id} LIMIT 1");
     Logger::debug("Telegram user: {$user_status}");
@@ -83,18 +83,14 @@ function perform_command_start($chat_id, $message)
         Logger::debug("Success of insertion query: {$success}");
     }
 
-    // if new user, start new conversation - else restore game status for user
+    // If user exists but hasn't begun the first step, send first step command
     if ($user_status === null || $user_status === false) {
-        if ($board_pos != "" && $board_pos != null)
-            start_command_first_step($chat_id, $board_pos);
-        else
-            start_command_new_conversation($chat_id);
-    } else {
-        if ($board_pos !== "" || $board_pos !== null)
-            start_command_continue_conversation($chat_id, $board_pos);
-        else
-            Logger::error("A /start command has been sent without position info");
+        start_command_first_step($chat_id, $board_pos);
+        return;
     }
+
+    // If all else fails, then the game is in progress
+    start_command_continue_conversation($chat_id, $board_pos);
 }
 
 function start_command_new_conversation($chat_id){
@@ -204,15 +200,15 @@ function send_pdf($chat_id, $name){
         // update user_status
         $result = db_perform_action("UPDATE user_status SET completed = 1,  completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
         // update certificates_list
-        $result = db_perform_action("INSERT INTO certificates_list (certificate_id, telegram_id, name, date) VALUES ('$guid', $chat_id, '$name', '$date'");
+        $result = db_perform_action("INSERT INTO certificates_list (certificate_id, telegram_id, name, date) VALUES ('$guid', $chat_id, '$name', '$date')");
 
         $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
         if($result !== false){
             // remove temp pdf
             //unlink($result["pdf_file"]);
             // Reset game
-            reset_game($chat_id);
-            telegram_send_message($chat_id, "Ora che hai completato il gioco e ricevuto il certificato puoi iniziare una nuova sfida.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze!");
+            //reset_game($chat_id);
+            //telegram_send_message($chat_id, "Ora che hai completato il gioco e ricevuto il certificato puoi iniziare una nuova sfida.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze!");
         }
 
     }
@@ -270,6 +266,7 @@ function reset_game($chat_id){
     db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
     db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
 }
+
 function clamp($min, $max, $value) {
     if($value < $min)
         return $min;
