@@ -128,8 +128,8 @@ function telegram_send_photo($chat_id, $photo_id, $caption, $parameters = null) 
 }
 
 function telegram_send_document($chat_id, $doc_id, $caption = null, $parameters = null) {
-    if(!$doc_id) {
-        Logger::error('Path to attached photo must be set', __FILE__);
+    if($doc_id == null) {
+        Logger::error('Path to attached document must be set', __FILE__);
         return false;
     }
     // Photo is remote if URL or non-existing file identifier is used
