@@ -11,12 +11,17 @@ function message_msg_processing($message){
         // We got an incoming text message
         $text = $message['text'];
         // Get user info to see if he has reached end of game
-        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id");
+        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id LIMIT 1");
 
         if (strpos($text, "/start") === 0) {
             Logger::debug("/start command");
             perform_command_start($chat_id, mb_strtolower($text));
             return;
+        } elseif (strpos($text, "/request_certificate") === 0) {
+            $pdf_path = "certificates/" . $user_info[4] . ".pdf";
+            // send user's last certificate
+            $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
+
         } elseif (strpos($text, "/reset") === 0){
             reset_game($chat_id);
             telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\n Scrivi /start per ricomincare!");

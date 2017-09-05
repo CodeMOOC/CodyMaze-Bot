@@ -3,6 +3,7 @@
 function callback_msg_processing($callback){
     Logger::debug("telegram update - callback query");
 
+    global $cardinal_position_to_name_map;
     $callback_data = $callback['data'];
     $chat_id = $callback['message']['chat']['id'];
 

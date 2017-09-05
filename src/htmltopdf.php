@@ -20,7 +20,8 @@ function htmlToPdf($name) {
     try {
         // Generate PDF
         $pdfName = $guid.'.pdf';
-        $snappy->generate('temp.html', $pdfName);
+        $path = "certificates/".$pdfName;
+        $snappy->generate('temp.html', $path);
 
         // Remove temp file
         unlink('temp.html');
