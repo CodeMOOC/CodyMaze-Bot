@@ -9,6 +9,8 @@
  */
 
 require_once('data.php');
+require_once('callback_msg_processing.php');
+require_once('message_msg_processing.php');
 require_once('maze_generator.php');
 require_once('maze_commands.php');
 require_once ('htmltopdf.php');
@@ -21,108 +23,46 @@ require_once ('htmltopdf.php');
 // Input: $update
 if(isset($update['message'])) {
     // Standard message
-    Logger::debug("message");
+    message_msg_processing($update['message']);
 
-    $message = $update['message'];
-    $message_id = $message['message_id'];
-    $chat_id = $message['chat']['id'];
-    $from_id = $message['from']['id'];
-
-    if (isset($message['text'])) {
-        // We got an incoming text message
-        $text = $message['text'];
-
-        // Get user info to see if he has reached end of game
-        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id");
-
-        if (strpos($text, "/start") === 0) {
-            Logger::debug("/start command");
-
-            perform_command_start($chat_id, mb_strtolower($text));
-            return;
-        } elseif (strpos($text, "/reset") === 0){
-            db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
-            db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
-
-            telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\n Scrivi /start per ricomincare!");
-        } elseif (strpos($text, "/start") !== 0 && $user_info[1] == 0) {
-            // User is probably writing name for certificate
-            request_name($chat_id, $text);
-        }else {
-            telegram_send_message($chat_id, "Non ho capito.");
-        }
-    }
-    else {
-        telegram_send_message($chat_id, "Uhm… non capisco questo tipo di messaggi! 😑\nPer riprovare invia /start.");
-    }
 } else if(isset($update['callback_query'])) {
     // Callback query
-    Logger::debug("Callback query");
-
-    $callback_data = $update['callback_query']['data'];
-    $chat_id = $update['callback_query']['message']['chat']['id'];
-
-    if(strpos($callback_data, 'card ') === 0) {
-        // Set disability
-        $card_code = substr($callback_data, 5);
-        if(isset($cardinal_position_to_name_map[$card_code])) {
-            // TODO: set correct text
-            telegram_send_message($chat_id, "Ok, al momento stai guardando verso {$cardinal_position_to_name_map[$card_code]}!");
-
-            // Get current game state
-            $user_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL");
-            Logger::debug("Game lvl: {$user_status}");
-
-            // If user has started a game, check position by removing first step
-            if($user_status !== NULL && $user_status !== false)
-                $lvl = $user_status;
-            else {
-                Logger::debug("Can't find user status. Setting user lvl to 1.");
-                $lvl = 1;
-            }
-
-            // Get user's coordinate
-            $current_coordinate = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
-            Logger::debug("Current user's coordinate: {$current_coordinate}");
-
-            // Prepare maze
-            $maze_data = generate_maze($lvl, $chat_id, $current_coordinate.$card_code);
-            $maze_arrival_position = substr($maze_data[1], 0,2);
-            $maze_message = $maze_data[0];
-            Logger::debug("maze data[0]: $maze_data[0]");
-            Logger::debug("maze data[1]: $maze_data[1]");
-
-            $success = db_perform_action("INSERT INTO moves (telegram_id, cell) VALUES($chat_id, '$maze_arrival_position')");
-            Logger::debug("Success of insertion: {$success}");
-
-            // Send maze
-            // TODO: set correct text
-            telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.", array("parse_mode" => "HTML"));
-        }
-        else {
-            Logger::error("Invalid callback data: {$callback_data}");
-            telegram_send_message($chat_id, "Codice non valido. 😑");
-        }
-    } elseif(strpos($callback_data, 'name ') === 0) {
-        $data = substr($callback_data, 5);
-        if ($data === "error"){
-            // Request name again
-            telegram_send_message($chat_id, "Riscrivimi il tuo nome e cognome:\n");
-        } else {
-            send_pdf($chat_id, $data);
-        }
-    }
-    else {
-        // Huh?
-        Logger::error("Unknown callback, data: {$callback_data}");
-    }
+    callback_msg_processing($update['callback_query']);
 }
 
 function perform_command_start($chat_id, $message)
 {
     Logger::debug("Start command");
 
-    // Get user's initial status from db
+    // Check if user is already registered
+    $user_exists = db_scalar_query("SELECT telegram_id FROM user_status WHERE telegram_id = {$chat_id} LIMIT 1");
+
+    if($user_exists === false || $user_exists === null){
+        // New user - register and start game
+        start_command_new_conversation($chat_id);
+        return;
+    }
+
+    // User exists - check /start command to see if it's a valid position
+    $board_pos = substr($message, 7);
+    Logger::debug("QRCode --> board position: {$board_pos}");
+
+    if ($board_pos === "" || $board_pos === null){
+        // Start command with no coordinate - check if is error
+        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = {$chat_id} LIMIT 1");
+        if($user_info[1] == 0){
+            // Error - wrong /start command
+            telegram_send_message($chat_id, "Ops! Sembra che mi sia arrivato un comando sbagliato, prova a fare una nuova scansione!\n");
+        } else {
+            if($user_info[2] === null){
+                // Error - waiting for user's name
+                telegram_send_message($chat_id, "Ops! Se non erro dovresti indicarmi il tuo nome ora, prova a riscrivermelo!\n");
+            }
+        }
+        return;
+    }
+    
+    // Get user's position from db if available
     $user_status = db_scalar_query("SELECT telegram_id FROM moves WHERE telegram_id = {$chat_id} LIMIT 1");
     Logger::debug("Telegram user: {$user_status}");
 
@@ -136,10 +76,6 @@ function perform_command_start($chat_id, $message)
 
     // Get current time
     $ts = date("Y-m-d H:i:s", time());
-
-    // Board position from qr mapping
-    $board_pos = substr($message, 7);
-    Logger::debug("QRCode --> board position: {$board_pos}");
 
     // Add user's new position to db if new position and if maze isn't being solved
     if (strcmp($last_position, $board_pos) !== 0 && ($has_null_timestamp === null || $has_null_timestamp === false)) {
@@ -167,24 +103,20 @@ function start_command_new_conversation($chat_id){
     // Insert new user into DB
     db_perform_action("INSERT INTO user_status (telegram_id, completed) VALUES ($chat_id, 0)");
 
-    // TODO: set proper message
     telegram_send_message($chat_id, "Ciao, sono il bot CodyMaze! 🤖\n\n Posizionati lungo il bordo della scacchiera e scansiona un QRCode!\n");
 }
 
 function start_command_first_step($chat_id, $board_pos){
     Logger::debug("Start first step");
-    // TODO: ask user to look in certain direction
     $cardinal_pos = coordinate_find_initial_direction($board_pos);
     if($cardinal_pos == null){
         // Remove record and warn user of wrong position
         $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND cell = '{$board_pos}'");
         Logger::debug("Removed record on wrong beginning position: {$success}");
 
-        // TODO: set text
         telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.\n");
     } else {
         $row_column_pos = substr($board_pos, 0, 2);
-        // TODO: set text
         telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in {$row_column_pos}! Ora dovresti posizionarti in modo da guardare verso {$cardinal_pos} se non lo stai già facendo.\n\n");
         request_cardinal_position($chat_id);
         //start_command_continue_conversation($chat_id, $board_pos);
@@ -227,7 +159,6 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
                     end_of_game($chat_id);
                 } else {
                     // Continue with next maze
-                    // TODO: set text
                     telegram_send_message($chat_id, "Complimenti, hai trovato il punto di arrivo!\n\n Ora puoi passare al prossimo step.\n");
                     request_cardinal_position($chat_id);
                 }
@@ -239,7 +170,6 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
                 Logger::debug("Success of remove query: {$success}");
 
                 $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL ORDER BY reached_on DESC LIMIT 1");
-                // TODO: set correct text
                 telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione {$beginning_position} e prova un nuovo labirinto.\n");
             }
         } else {
@@ -254,27 +184,41 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
 function end_of_game($chat_id){
     telegram_send_message($chat_id, "Complimenti! Hai completato il CodyMaze!\n\n");
-    // TODO: ask for name
     telegram_send_message($chat_id, "Scrivimi il nome e cognome da visualizzare sul certificato di completamento:\n");
 }
 
 function send_pdf($chat_id, $name){
     $result = htmlToPdf($name);
+    Logger::debug("RESULT:");
+    Logger::debug("pdf_valid: ". $result["pdf_valid"]);
+    Logger::debug("pdf_guid: " . $result["pdf_guid"]);
+    Logger::debug("pdf_date: " . $result["pdf_date"]);
+    Logger::debug("pdf_name: " . $result["pdf_name"]);
+    Logger::debug("pdf_file: " . $result["pdf_file"]);
 
     if($result["pdf_valid"]== true){
+
         $guid = $result["pdf_guid"];
         $date = $result["pdf_date"];
-        db_perform_action("UPDATE user_status SET completed = 1,  completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
+        $pdf_path = $result["pdf_file"];
+        // update user_status
+        $result = db_perform_action("UPDATE user_status SET completed = 1,  completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
+        // update certificates_list
+        $result = db_perform_action("INSERT INTO certificates_list (certificate_id, telegram_id, name, date) VALUES ('$guid', $chat_id, '$name', '$date'");
 
-        // TODO: send pdf
-        telegram_send_document($chat_id, $result["pdf_file"], "Certificato di Completamento");
-        // remove temp pdf
-        unlink($result["pdf_file"]);
+        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
+        if($result !== false){
+            // remove temp pdf
+            //unlink($result["pdf_file"]);
+            // Reset game
+            reset_game($chat_id);
+            telegram_send_message($chat_id, "Ora che hai completato il gioco e ricevuto il certificato puoi iniziare una nuova sfida.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze!");
+        }
+
     }
 }
 
 function request_cardinal_position($chat_id){
-    // TODO: set proper text
     telegram_send_message($chat_id, "In che direzione stai guardando?",
         array("reply_markup" => array(
             "inline_keyboard" => array(
@@ -294,7 +238,6 @@ function request_cardinal_position($chat_id){
 }
 
 function request_name($chat_id, $name){
-    // TODO: set proper text
     telegram_send_message($chat_id, "Confermi che il nome inviato è {$name}?",
         array("reply_markup" => array(
             "inline_keyboard" => array(
@@ -323,6 +266,10 @@ function request_start($chat_id) {
     );
 }
 
+function reset_game($chat_id){
+    db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
+    db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
+}
 function clamp($min, $max, $value) {
     if($value < $min)
         return $min;
