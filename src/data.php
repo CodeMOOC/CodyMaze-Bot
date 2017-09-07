@@ -4,6 +4,14 @@ define('BOARD_SIDE_SIZE', 5);
 define('BOARD_SIZE', BOARD_SIDE_SIZE * BOARD_SIDE_SIZE);
 define("NUMBER_OF_GAMES", 13);
 
+/* user_status table array position constants */
+define('USER_STATUS_TELEGRAM_ID', 0);
+define('USER_STATUS_COMPLETED', 1);
+define('USER_STATUS_COMPLETED_ON', 2);
+define('USER_STATUS_NAME', 3);
+define('USER_STATUS_CERTIFICATE_ID', 4);
+define('USER_STATUS_CERTIFICATE_SENT', 5);
+
 $cardinal_code = array(
     "n",
     "s",

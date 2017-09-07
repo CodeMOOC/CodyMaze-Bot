@@ -30,6 +30,10 @@ if(isset($update['message'])) {
     callback_msg_processing($update['callback_query']);
 }
 
+/**
+ * @param $chat_id
+ * @param $message
+ */
 function perform_command_start($chat_id, $message)
 {
     Logger::debug("Start command");
@@ -93,18 +97,27 @@ function perform_command_start($chat_id, $message)
     start_command_continue_conversation($chat_id, $board_pos);
 }
 
+/**
+ * @param $chat_id
+ */
 function start_command_new_conversation($chat_id){
     Logger::debug("Start new conversation");
 
     // Insert new user into DB
     db_perform_action("INSERT INTO user_status (telegram_id, completed) VALUES ($chat_id, 0)");
 
+    // Send message to user
     telegram_send_message($chat_id, "Ciao, sono il bot CodyMaze! 🤖\n\n Posizionati lungo il bordo della scacchiera e scansiona un QRCode!\n");
 }
 
+/**
+ * @param $chat_id
+ * @param $board_pos
+ */
 function start_command_first_step($chat_id, $board_pos){
-    Logger::debug("Start first step");
+    Logger::debug("Start first step - board position {$board_pos}");
     $cardinal_pos = coordinate_find_initial_direction($board_pos);
+
     if($cardinal_pos == null){
         // Remove record and warn user of wrong position
         $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND cell = '{$board_pos}'");
@@ -112,13 +125,20 @@ function start_command_first_step($chat_id, $board_pos){
 
         telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.\n");
     } else {
+        // Update db with initial cardinal position
+        $full_pos = mb_strtolower($board_pos.$cardinal_pos);
+        db_perform_action("UPDATE moves SET cell = '$full_pos' WHERE telegram_id = {$chat_id} ORDER BY reached_on ASC");
+
         $row_column_pos = substr($board_pos, 0, 2);
         telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in {$row_column_pos}! Ora dovresti posizionarti in modo da guardare verso {$cardinal_pos} se non lo stai già facendo.\n\n");
         request_cardinal_position($chat_id);
-        //start_command_continue_conversation($chat_id, $board_pos);
     }
 }
 
+/**
+ * @param $chat_id
+ * @param null $user_position_id
+ */
 function start_command_continue_conversation($chat_id, $user_position_id = null){
     Logger::debug("Start old conversation");
 
@@ -155,7 +175,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
                     end_of_game($chat_id);
                 } else {
                     // Continue with next maze
-                    telegram_send_message($chat_id, "Complimenti, hai trovato il punto di arrivo!\n\n Ora puoi passare al prossimo step.\n");
+                    telegram_send_message($chat_id, "Ho ricevuto la tua nuova posizione!\n");
                     request_cardinal_position($chat_id);
                 }
             } else {
@@ -166,7 +186,8 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
                 Logger::debug("Success of remove query: {$success}");
 
                 $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL ORDER BY reached_on DESC LIMIT 1");
-                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione {$beginning_position} e prova un nuovo labirinto.\n");
+                $beginning_position_no_direction = get_position_no_direction($beginning_position);
+                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione <code>{$beginning_position_no_direction}<\code> e prova un nuovo labirinto.\n", array("parse_mode" => "HTML"));
             }
         } else {
             // Request cardinal position
@@ -178,11 +199,19 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
     }
 }
 
+/**
+ * @param $chat_id
+ */
 function end_of_game($chat_id){
+    $result = db_perform_action("UPDATE user_status SET completed = 1 WHERE telegram_id = {$chat_id}");
     telegram_send_message($chat_id, "Complimenti! Hai completato il CodyMaze!\n\n");
     telegram_send_message($chat_id, "Scrivimi il nome e cognome da visualizzare sul certificato di completamento:\n");
 }
 
+/**
+ * @param $chat_id
+ * @param $name
+ */
 function send_pdf($chat_id, $name){
     $result = htmlToPdf($name);
     Logger::debug("RESULT:");
@@ -196,9 +225,9 @@ function send_pdf($chat_id, $name){
 
         $guid = $result["pdf_guid"];
         $date = $result["pdf_date"];
-        $pdf_path = $result["pdf_file"];
+        $pdf_path = "certificates/".$result["pdf_file"];
         // update user_status
-        $result = db_perform_action("UPDATE user_status SET completed = 1,  completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
+        $result = db_perform_action("UPDATE user_status SET completed_on = '$date', name = '$name', certificate_id = '$guid' WHERE telegram_id = {$chat_id}");
         // update certificates_list
         $result = db_perform_action("INSERT INTO certificates_list (certificate_id, telegram_id, name, date) VALUES ('$guid', $chat_id, '$name', '$date')");
 
@@ -214,6 +243,9 @@ function send_pdf($chat_id, $name){
     }
 }
 
+/**
+ * @param $chat_id
+ */
 function request_cardinal_position($chat_id){
     telegram_send_message($chat_id, "In che direzione stai guardando?",
         array("reply_markup" => array(
@@ -233,6 +265,10 @@ function request_cardinal_position($chat_id){
     );
 }
 
+/**
+ * @param $chat_id
+ * @param $name
+ */
 function request_name($chat_id, $name){
     telegram_send_message($chat_id, "Confermi che il nome inviato è {$name}?",
         array("reply_markup" => array(
@@ -248,25 +284,20 @@ function request_name($chat_id, $name){
     );
 }
 
-function request_start($chat_id) {
-    telegram_send_message($chat_id, "Per iniziare a registrare, clicca sul pulsante qui sotto.",
-        array("reply_markup" => array(
-            "keyboard" => array(
-                array(
-                    array("text" => "Inizia il percorso!", "request_location" => true)
-                )
-            ),
-            "resize_keyboard" => true,
-            "one_time_keyboard" => true
-        ))
-    );
-}
-
+/**
+ * @param $chat_id
+ */
 function reset_game($chat_id){
     db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
     db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
 }
 
+/**
+ * @param $min
+ * @param $max
+ * @param $value
+ * @return mixed
+ */
 function clamp($min, $max, $value) {
     if($value < $min)
         return $min;
@@ -274,4 +305,12 @@ function clamp($min, $max, $value) {
         return $max;
     else
         return $value;
+}
+
+/**
+ * @param $position
+ * @return bool|string
+ */
+function get_position_no_direction($position){
+    return substr($position, 0,2);
 }
