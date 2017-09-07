@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 24, 2017 at 08:26 AM
--- Server version: 10.1.23-MariaDB-9+deb9u1
--- PHP Version: 7.0.22-1~dotdeb+8.1
+-- Creato il: Set 07, 2017 alle 08:59
+-- Versione del server: 10.1.23-MariaDB-9+deb9u1
+-- Versione PHP: 7.0.22-1~dotdeb+8.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `moves`
+-- Struttura della tabella `certificates_list`
+--
+
+CREATE TABLE `certificates_list` (
+  `certificate_id` char(36) NOT NULL,
+  `telegram_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `moves`
 --
 
 CREATE TABLE `moves` (
@@ -31,7 +44,7 @@ CREATE TABLE `moves` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_status`
+-- Struttura della tabella `user_status`
 --
 
 CREATE TABLE `user_status` (
@@ -39,21 +52,28 @@ CREATE TABLE `user_status` (
   `completed` bit(1) NOT NULL DEFAULT b'0',
   `completed_on` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `certificate_id` char(36) DEFAULT NULL
+  `certificate_id` char(36) DEFAULT NULL,
+  `certificate_sent` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Indexes for dumped tables
+-- Indici per le tabelle scaricate
 --
 
 --
--- Indexes for table `moves`
+-- Indici per le tabelle `certificates_list`
+--
+ALTER TABLE `certificates_list`
+  ADD PRIMARY KEY (`certificate_id`);
+
+--
+-- Indici per le tabelle `moves`
 --
 ALTER TABLE `moves`
   ADD KEY `reached_on` (`reached_on`);
 
 --
--- Indexes for table `user_status`
+-- Indici per le tabelle `user_status`
 --
 ALTER TABLE `user_status`
   ADD PRIMARY KEY (`telegram_id`);
