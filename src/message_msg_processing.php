@@ -37,9 +37,12 @@ function message_msg_processing($message){
                     }
                 }
             }
-        } elseif (strpos($text, "/start") !== 0 && $user_info[USER_STATUS_COMPLETED] == 1 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
+        } elseif ($user_info[USER_STATUS_COMPLETED] == 1 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
             // User is probably writing name for certificate
             request_name($chat_id, $text);
+        } elseif ($user_info[USER_STATUS_COMPLETED] == 0 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
+            // User is probably writing something instead of playing
+            telegram_send_message($chat_id, "Non ho capito. Forse dovresti scansionare un QRCode?");
         } else {
             telegram_send_message($chat_id, "Non ho capito.");
         }
