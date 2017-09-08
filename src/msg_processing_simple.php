@@ -81,14 +81,17 @@ function perform_command_start($chat_id, $message)
     // Get current time
     $ts = date("Y-m-d H:i:s", time());
 
-    // Add user's new position to db if new position and if maze isn't being solved
+    // Add user's position to db if new game
     if (strcmp($last_position, $board_pos) !== 0 && ($has_null_timestamp === null || $has_null_timestamp === false)) {
-        $success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, '$ts', '$board_pos')");
-        Logger::debug("Success of insertion query: {$success}");
+        //$success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, '$ts', '$board_pos')");
+        //Logger::debug("Success of insertion query: {$success}");
     }
 
     // If user exists but hasn't begun the first step, send first step command
     if ($user_status === null || $user_status === false) {
+        $success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, '$ts', '$board_pos')");
+        Logger::debug("Success of insertion query: {$success}");
+
         start_command_first_step($chat_id, $board_pos);
         return;
     }
@@ -116,6 +119,7 @@ function start_command_new_conversation($chat_id){
  */
 function start_command_first_step($chat_id, $board_pos){
     Logger::debug("Start first step - board position {$board_pos}");
+    global $cardinal_position_to_name_map;
     $cardinal_pos = coordinate_find_initial_direction($board_pos);
 
     if($cardinal_pos == null){
@@ -130,8 +134,8 @@ function start_command_first_step($chat_id, $board_pos){
         db_perform_action("UPDATE moves SET cell = '$full_pos' WHERE telegram_id = {$chat_id} ORDER BY reached_on ASC");
 
         $row_column_pos = substr($board_pos, 0, 2);
-        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in {$row_column_pos}! Ora dovresti posizionarti in modo da guardare verso {$cardinal_pos} se non lo stai già facendo.\n\n");
-        request_cardinal_position($chat_id);
+        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in <code>{$row_column_pos}</code>! Ora dovresti posizionarti in modo da guardare verso <code>{$cardinal_pos}</code> se non lo stai già facendo.\n\n", array("parse_mode" => "HTML"));
+        request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
     }
 }
 
@@ -141,6 +145,8 @@ function start_command_first_step($chat_id, $board_pos){
  */
 function start_command_continue_conversation($chat_id, $user_position_id = null){
     Logger::debug("Start old conversation");
+
+    global $cardinal_position_to_name_map;
 
     // Get current game position of user
     $user_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL LIMIT 1");
@@ -160,7 +166,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
     $has_null_timestamp = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
 
     if($user_game_status < NUMBER_OF_GAMES) {
-        if ($has_null_timestamp !== null || $has_null_timestamp !== false) {
+        if ($has_null_timestamp !== null && $has_null_timestamp !== false) {
             Logger::debug("Cell timestamp is not null.");
 
             $answer = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL LIMIT 1");
@@ -169,33 +175,47 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
             // Check for correct answer and update db
             if(strcmp(substr($answer, 0,2), $user_position_id) === 0){
                 // Correct answer - continue or end game if reached last maze
-                $ts = date("Y-m-d H:i:s", time());
-                db_perform_action("UPDATE moves SET reached_on = '$ts' WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
                 if($user_game_status == (NUMBER_OF_GAMES-1)){
-                    end_of_game($chat_id);
+                    request_cardinal_position($chat_id, CARD_ENDGAME_POSITION);
                 } else {
                     // Continue with next maze
-                    telegram_send_message($chat_id, "Ho ricevuto la tua nuova posizione!\n");
-                    request_cardinal_position($chat_id);
+                    if($user_status > 0)
+                        request_cardinal_position($chat_id, CARD_ANSWERING_QUIZ);
+                    else
+                        request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
                 }
             } else {
                 // Wrong answer - remove end of maze position tuple and send back to last position for new maze
                 $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
-                db_perform_action("UPDATE moves SET reached_on = NULL WHERE telegram_id = {$chat_id} ORDER BY reached_on DESC LIMIT 1");
+                // TODO db_perform_action("UPDATE moves SET reached_on = NULL WHERE telegram_id = {$chat_id} ORDER BY reached_on DESC LIMIT 1");
 
                 Logger::debug("Success of remove query: {$success}");
 
-                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL ORDER BY reached_on DESC LIMIT 1");
+                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
                 $beginning_position_no_direction = get_position_no_direction($beginning_position);
-                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione <code>{$beginning_position_no_direction}<\code> e prova un nuovo labirinto.\n", array("parse_mode" => "HTML"));
+                $beginning_position_direction = get_direction($beginning_position);
+                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Ritorna alla posizione <code>{$beginning_position_no_direction}</code> guardando verso <code>{$cardinal_position_to_name_map[$beginning_position_direction]}</code> e prova un nuovo labirinto.\n", array("parse_mode" => "HTML"));
             }
         } else {
             // Request cardinal position
-            Logger::debug("Cell with null timestamp: {$has_null_timestamp}");
-            request_cardinal_position($chat_id);
+            Logger::debug("Cell with set timestamp.");
+            $answer = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+            Logger::debug("Expecting answer: {$answer}");
+
+            // Check for correct answer to continue
+            if(strcmp(substr($answer, 0,2), $user_position_id) === 0)
+                request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
+            else{
+                $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+                $beginning_position_no_direction = get_position_no_direction($beginning_position);
+                $beginning_position_direction = get_direction($beginning_position);
+                telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\n Devi raggiungere la posizione <code>{$beginning_position_no_direction}</code> guardando verso <code>{$cardinal_position_to_name_map[$beginning_position_direction]}</code>\n", array("parse_mode" => "HTML"));
+            }
+
         }
     } else {
-        end_of_game($chat_id);
+        request_cardinal_position($chat_id, CARD_ENDGAME_POSITION);
+        //end_of_game($chat_id);
     }
 }
 
@@ -245,20 +265,21 @@ function send_pdf($chat_id, $name){
 
 /**
  * @param $chat_id
+ * @param $state
  */
-function request_cardinal_position($chat_id){
+function request_cardinal_position($chat_id, $state){
     telegram_send_message($chat_id, "In che direzione stai guardando?",
         array("reply_markup" => array(
             "inline_keyboard" => array(
                 array(
-                    array("text" => "Nord", "callback_data" => "card n"),
+                    array("text" => "Nord", "callback_data" => "card n {$state}"),
                 ),
                 array(
-                    array("text" => "Ovest", "callback_data" => "card w"),
-                    array("text" => "Est", "callback_data" => "card e")
+                    array("text" => "Ovest", "callback_data" => "card w {$state}"),
+                    array("text" => "Est", "callback_data" => "card e {$state}")
                 ),
                 array(
-                    array("text" => "Sud", "callback_data" => "card s"),
+                    array("text" => "Sud", "callback_data" => "card s {$state}"),
                 )
             )
         ))
@@ -313,4 +334,12 @@ function clamp($min, $max, $value) {
  */
 function get_position_no_direction($position){
     return substr($position, 0,2);
+}
+
+/**
+ * @param $position
+ * @return bool|string
+ */
+function get_direction($position){
+    return substr($position, 2,1);
 }
