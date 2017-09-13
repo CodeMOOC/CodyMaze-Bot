@@ -15,7 +15,7 @@ function htmlToPdf($name) {
     $snappy->setOption('orientation', 'Landscape');
     $snappy->setOption('page-size', 'A4');
     $snappy->setOption('no-pdf-compression', false);
-    $snappy->setOption('lowquality', false);
+    $snappy->setOption('lowquality', true);
 
     try {
         // Generate PDF
@@ -56,4 +56,5 @@ function GUID()
     return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 }
 
-// to test: htmlToPdf("Brendan Paolini");
+// to test:
+//htmlToPdf("Brendan Paolini");

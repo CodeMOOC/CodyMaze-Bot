@@ -2,7 +2,7 @@
 /* General data */
 define('BOARD_SIDE_SIZE', 5);
 define('BOARD_SIZE', BOARD_SIDE_SIZE * BOARD_SIDE_SIZE);
-define("NUMBER_OF_GAMES", 6);
+define("NUMBER_OF_GAMES", 13);
 
 /* user_status table array position constants */
 define('USER_STATUS_TELEGRAM_ID', 0);

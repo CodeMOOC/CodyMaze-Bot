@@ -2,7 +2,7 @@
 ob_start();
 ?>
 
-    <html>
+<html>
     <head>
         <meta charset="UTF-8" />
         <link href="css/pdf-template.css" rel="stylesheet" />

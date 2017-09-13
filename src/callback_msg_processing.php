@@ -31,15 +31,21 @@ function cardinal_message_processing($chat_id, $callback_data){
 
         // Get current game state
         $user_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL");
-        Logger::debug("Game lvl: {$user_status}");
+        $user_null_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
 
         // If user has started a game, get position, else set to step 1
-        if($user_status !== NULL && $user_status !== false)
-            $lvl = $user_status;
-        else {
-            Logger::debug("Can't find user status. Setting user lvl to 1.");
+        if ($user_status !== NULL && $user_status !== false) {
+            if ($user_null_status != NULL && $user_null_status !== false) {
+                $lvl = $user_status + 1;
+            } else {
+                $lvl = $user_status;
+            }
+        } else {
+            Logger::debug("Can't find user status. Setting user lvl to 0.");
             $lvl = 1;
         }
+
+        Logger::debug("Game lvl: {$lvl}");
 
         // Get user's coordinate
         $current_coordinate = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL LIMIT 1");
@@ -103,7 +109,7 @@ function cardinal_message_processing($chat_id, $callback_data){
         Logger::debug("Success of insertion: {$success}");
 
         // Send maze
-        telegram_send_message($chat_id, "Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.", array("parse_mode" => "HTML"));
+        telegram_send_message($chat_id, "{$lvl}. Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n\n <code>{$maze_message}</code>.", array("parse_mode" => "HTML"));
     }
     else {
         Logger::error("Invalid callback data: {$callback_data}");
