@@ -1,11 +1,10 @@
 #container {
-    width: 1145px;
+    width: 1149px;
     height: 770px;
     text-align: center;
     /*border: 10px solid #cf6cad;*/
     background-image: url("../images/codymaze.png");
-    background-size: 1145px 770px;
-    color: black;
+    background-size: 1149px 770px;
 }
 
 #container span {
@@ -13,29 +12,41 @@
 }
 
 .spaced {
-    padding-top: 350px;
     display: block;
+    padding-top: 350px;
+}
+
+.small-spaced {
+    display: block;
+    padding-top: 5px;
 }
 
 .padded {
-    padding: 0px 150px 0px 150px;
     display: block;
+    padding: 0px 100px 0px 100px;
+}
+
+.reduced {
+    display: block;
+    padding: 135px 250px 0px 250px;
 }
 
 .font-10 {
-    font-size: 7px;
+    font-size: 10px;
+    font-style: italic;
 }
 
 .font-15 {
-    font-size: 12px;
+    font-size: 15px;
+    font-style: italic;
 }
 
 .font-20 {
-    font-size: 17px;
+    font-size: 20px;
 }
 
 .font-25 {
-    font-size: 22px;
+    font-size: 25px;
 }
 
 .font-30 {
@@ -46,32 +57,12 @@
 }
 
 #container span:last-child {
-    margin: 0.6em 0 0 0;
+    margin: 0.5em 0 0 0;
 }
 
 #signature {
     padding-left: 670px;
     text-align: left;
-}
-
-/* unvisited link */
-a:link {
-    color: black;
-}
-
-/* visited link */
-a:visited {
-    color: black;
-}
-
-/* mouse over link */
-a:hover {
-    color: black;
-}
-
-/* selected link */
-a:active {
-    color: black;
 }
 
 @media print {

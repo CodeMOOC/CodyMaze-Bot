@@ -150,12 +150,26 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
     // Get current game position of user
     $user_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL LIMIT 1");
+    $user_null_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
     Logger::debug("User status: {$user_status}");
+    Logger::debug("User null status: {$user_null_status}");
 
     // If user has started a game, check position by removing first step
+    /*
     if($user_status !== NULL && $user_status !== false)
         $user_game_status = $user_status - 1;
     else {
+        Logger::debug("Can't find user status. Setting user position to 0.");
+        $user_game_status = 0;
+    }
+    */
+    if ($user_status !== NULL && $user_status !== false) {
+        if ($user_null_status != NULL && $user_null_status !== false) {
+            $user_game_status = $user_status - 1;
+        } else {
+            $user_game_status = $user_status - 2;
+        }
+    } else {
         Logger::debug("Can't find user status. Setting user position to 0.");
         $user_game_status = 0;
     }
@@ -254,10 +268,10 @@ function send_pdf($chat_id, $name){
         $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
         if($result !== false){
             // remove temp pdf
-            //unlink($result["pdf_file"]);
+            unlink($pdf_path);
             // Reset game
-            //reset_game($chat_id);
-            //telegram_send_message($chat_id, "Ora che hai completato il gioco e ricevuto il certificato puoi iniziare una nuova sfida.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze!");
+            reset_game($chat_id);
+            telegram_send_message($chat_id, "Ora che hai completato il gioco e ricevuto il certificato puoi iniziare una nuova sfida.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze!");
         }
 
     }
