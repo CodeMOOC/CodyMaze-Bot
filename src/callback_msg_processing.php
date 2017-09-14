@@ -5,16 +5,31 @@ function callback_msg_processing($callback){
 
     $callback_data = $callback['data'];
     $chat_id = $callback['message']['chat']['id'];
+    $message_id = $callback['message']['message_id'];
 
-    if(strpos($callback_data, 'card ') === 0) {
-        cardinal_message_processing($chat_id, $callback_data);
-    } elseif(strpos($callback_data, 'name ') === 0) {
-        name_message_processing($chat_id, $callback_data);
+    // Get last seen callback message id
+    $last_null_msg_id = db_scalar_query("SELECT last_callback_id FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL LIMIT 1");
+    $last_nonnull_msg_id = db_scalar_query("SELECT last_callback_id FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
+
+    // Check to make sure user didn't press last button scheme -- no way to check older buttons
+    if($last_nonnull_msg_id == $message_id || $last_null_msg_id == $message_id){
+        Logger::error("already received answer from callback with message id {$message_id}");
+        return;
+    } else {
+        db_perform_action("UPDATE moves SET last_callback_id = $message_id WHERE telegram_id = {$chat_id}");
+
+        if(strpos($callback_data, 'card ') === 0) {
+            cardinal_message_processing($chat_id, $callback_data);
+        } elseif(strpos($callback_data, 'name ') === 0) {
+            name_message_processing($chat_id, $callback_data);
+        }
+        else {
+            // Huh?
+            Logger::error("Unknown callback, data: {$callback_data}");
+        }
     }
-    else {
-        // Huh?
-        Logger::error("Unknown callback, data: {$callback_data}");
-    }
+
+
 }
 
 function cardinal_message_processing($chat_id, $callback_data){
