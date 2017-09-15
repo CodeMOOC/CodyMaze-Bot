@@ -11,6 +11,7 @@
 require_once('data.php');
 require_once('callback_msg_processing.php');
 require_once('message_msg_processing.php');
+require_once('debug_msg_processing.php');
 require_once('maze_generator.php');
 require_once('maze_commands.php');
 require_once ('htmltopdf.php');
