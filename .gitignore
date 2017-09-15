@@ -1,4 +1,5 @@
 .idea/*
+src/config.php
 src/composer.json
 src/vendor/autoload.php
 src/vendor/composer/autoload_classmap.php
