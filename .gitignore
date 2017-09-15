@@ -53,3 +53,4 @@ src/vendor/symfony/process/Tests/ProcessFailedExceptionTest.php
 src/vendor/symfony/process/Tests/ProcessTest.php
 src/vendor/symfony/process/Tests/ProcessUtilsTest.php
 src/vendor/symfony/process/Tests/SignalListener.php
+src/config.php
