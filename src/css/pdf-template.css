@@ -1,10 +1,10 @@
 #container {
-    width: 1149px;
-    height: 770px;
+    width: 1338px;
+    height: 910px;
     text-align: center;
     /*border: 10px solid #cf6cad;*/
     background-image: url("../images/codymaze.png");
-    background-size: 1149px 770px;
+    background-size: 1338px 910px;
 }
 
 #container span {

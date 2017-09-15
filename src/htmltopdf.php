@@ -15,7 +15,7 @@ function htmlToPdf($name) {
     $snappy->setOption('orientation', 'Landscape');
     $snappy->setOption('page-size', 'A4');
     $snappy->setOption('no-pdf-compression', false);
-    $snappy->setOption('lowquality', true);
+    $snappy->setOption('lowquality', false);
 
     try {
         // Generate PDF
