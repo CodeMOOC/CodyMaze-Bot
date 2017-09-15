@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 use Knp\Snappy\Pdf;
+use Knp\Snappy\Image;
 
 function htmlToPdf($name) {
     $guid = GUID();
@@ -11,15 +12,20 @@ function htmlToPdf($name) {
     // Prepare pdf generator
     //$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
     //$snappy = new Pdf('wkhtmltopdf');
-    $snappy = new Pdf('wkhtmltox/bin/wkhtmltopdf');
-    $snappy->setOption('orientation', 'Landscape');
-    $snappy->setOption('page-size', 'A4');
-    $snappy->setOption('no-pdf-compression', false);
-    $snappy->setOption('lowquality', false);
+    //$snappy = new Pdf('wkhtmltox/bin/wkhtmltopdf');
+
+    //$snappy = new Image('wkhtmltoimage');
+    $snappy = new Image('wkhtmltox/bin/wkhtmltoimage');
+
+    //$snappy->setOption('orientation', 'Landscape');
+    //$snappy->setOption('page-size', 'A4');
+    //$snappy->setOption('no-pdf-compression', false);
+    //$snappy->setOption('lowquality', false);
 
     try {
         // Generate PDF
-        $pdfName = $guid.'.pdf';
+        //$pdfName = $guid.'.pdf';
+        $pdfName = $guid.'.png';
         $path = "certificates/".$pdfName;
         $snappy->generate('temp.html', $path);
 
