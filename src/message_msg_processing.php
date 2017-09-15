@@ -17,11 +17,6 @@ function message_msg_processing($message){
             Logger::debug("/start command");
             perform_command_start($chat_id, mb_strtolower($text));
             return;
-        } elseif (strpos($text, "/request_certificate") === 0) {
-            $pdf_path = "certificates/" . $user_info[USER_STATUS_CERTIFICATE_ID] . ".pdf";
-            // send user's last certificate
-            $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
-
         } elseif (strpos($text, "/reset") === 0){
             reset_game($chat_id);
             telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze.");
@@ -37,6 +32,10 @@ function message_msg_processing($message){
                     }
                 }
             }
+        } elseif (strpos($text, "/debug") === 0) {
+            // Debugging commands received
+            telegram_send_message($chat_id, "Received debug command...");
+            debug_message_processing($chat_id, $text);
         } elseif ($user_info[USER_STATUS_COMPLETED] == 1 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
             // User is probably writing name for certificate
             request_name($chat_id, $text);

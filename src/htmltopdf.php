@@ -35,6 +35,7 @@ function htmlToPdf($name) {
         );
         return $returnData;
     } catch (Exception $e){
+        Logger::error("pdf creation error: {$e}");
         $returnData = array(
             "pdf_valid" => false,
             "pdf_guid" => null,
