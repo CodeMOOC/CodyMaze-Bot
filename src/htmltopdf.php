@@ -4,7 +4,7 @@ use Knp\Snappy\Pdf;
 
 function htmlToPdf($name) {
     $guid = GUID();
-    $date = date("Y-m-d", time());
+    $date = date("Y-m-d H:i:s", time());
 
     require "pdf-template.php"; // Needed to generate static HTML page - Snappy won't read .php files
 
