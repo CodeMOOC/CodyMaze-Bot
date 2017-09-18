@@ -1,6 +1,6 @@
 <?php
-require_once('lib_log.php');
-require_once('maze_utility.php');
+require_once(dirname(__FILE__) . '/lib_log.php');
+require_once(dirname(__FILE__) . '/maze_utility.php');
 
 /*
  * Nil command, does not execute any steps and returns the current coordinate.

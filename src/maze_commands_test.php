@@ -1,5 +1,5 @@
 <?php
-require_once('maze_commands.php');
+require_once(dirname(__FILE__) . '/maze_commands.php');
 
 error_reporting(E_ALL);
 assert_options(ASSERT_ACTIVE, 1);

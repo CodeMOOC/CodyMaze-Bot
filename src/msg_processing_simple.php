@@ -8,13 +8,13 @@
  * used by both pull and push scripts.
  */
 
-require_once('data.php');
-require_once('callback_msg_processing.php');
-require_once('message_msg_processing.php');
-require_once('debug_msg_processing.php');
-require_once('maze_generator.php');
-require_once('maze_commands.php');
-require_once ('htmltopdf.php');
+require_once(dirname(__FILE__) . '/data.php');
+require_once(dirname(__FILE__) . '/callback_msg_processing.php');
+require_once(dirname(__FILE__) . '/message_msg_processing.php');
+require_once(dirname(__FILE__) . '/debug_msg_processing.php');
+require_once(dirname(__FILE__) . '/maze_generator.php');
+require_once(dirname(__FILE__) . '/maze_commands.php');
+require_once(dirname(__FILE__) . '/htmltopdf.php');
 
 // This file assumes to be included by pull.php or
 // hook.php right after receiving a new Telegram update.
