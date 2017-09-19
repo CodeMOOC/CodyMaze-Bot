@@ -1,11 +1,12 @@
 <?php
+function message_msg_processing($message) {
+    global $memory;
 
-function message_msg_processing($message){
-    Logger::debug("telegram update - message");
+    Logger::debug("Processing text message", __FILE__);
 
     $chat_id = $message['chat']['id'];
-    //$message_id = $message['message_id'];
-    //$from_id = $message['from']['id'];
+
+    memory_load_for_user($chat_id);
 
     if (isset($message['text'])) {
         // We got an incoming text message
@@ -14,13 +15,13 @@ function message_msg_processing($message){
         $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id LIMIT 1");
 
         if (strpos($text, "/start") === 0) {
-            Logger::debug("/start command");
             perform_command_start($chat_id, mb_strtolower($text));
-            return;
-        } elseif (strpos($text, "/reset") === 0){
+        }
+        else if ($text === "/reset"){
             reset_game($chat_id);
-            telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\n Scrivi /start per ricomincare o scansiona un QRCode del CodyMaze.");
-        } elseif(strpos($text, "/send_certificates") === 0 && $chat_id == 212567799){
+            telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\nScrivi /start per ricomincare o scansiona un QRCode del CodyMaze.");
+        }
+        else if($text == "/send_certificates" && $chat_id == 212567799){
             $result = db_table_query("SELECT * FROM user_status");
             if($result !== null && $result !== false){
                 foreach ($result as $item) {
@@ -32,21 +33,32 @@ function message_msg_processing($message){
                     }
                 }
             }
-        } elseif (strpos($text, "/debug") === 0) {
+        }
+        else if (strpos($text, "/debug") === 0) {
             // Debugging commands received
             telegram_send_message($chat_id, "Received debug command...");
             debug_message_processing($chat_id, $text);
-        } elseif ($user_info[USER_STATUS_COMPLETED] == 1 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
-            // User is probably writing name for certificate
-            request_name($chat_id, $text);
-        } elseif ($user_info[USER_STATUS_COMPLETED] == 0 && $user_info[USER_STATUS_CERTIFICATE_SENT] == 0) {
+        }
+        else if($user_info[USER_STATUS_COMPLETED] == 1) {
+            if (isset($memory->nameRequested)) {
+                // User is writing name for certificate
+                request_name($chat_id, $text);
+            }
+            else {
+                telegram_send_message($chat_id, "Hai completato CodyMaze!\nSe vuoi giocare nuovamente, invia il comando /reset.");
+            }
+        }
+        else if ($user_info[USER_STATUS_COMPLETED] == 0) {
             // User is probably writing something instead of playing
-            telegram_send_message($chat_id, "Non ho capito. Forse dovresti scansionare un QRCode?");
-        } else {
+            telegram_send_message($chat_id, "Non ho capito. Scansionare un QRCode del labirinto per continuare a giocare.");
+        }
+        else {
             telegram_send_message($chat_id, "Non ho capito.");
         }
     }
     else {
         telegram_send_message($chat_id, "Uhm… non capisco questo tipo di messaggi! 😑\nPer riprovare invia /start o scansiona un QRCode.");
     }
+
+    memory_persist($chat_id);
 }

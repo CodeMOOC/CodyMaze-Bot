@@ -8,6 +8,7 @@
  */
 
 require_once(dirname(__FILE__) . '/config.php');
+require_once(dirname(__FILE__) . '/lib_memory.php');
 require_once(dirname(__FILE__) . '/lib_utility.php');
 require_once(dirname(__FILE__) . '/lib_log.php');
 require_once(dirname(__FILE__) . '/lib_http.php');

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2017 at 09:50 AM
+-- Generation Time: Sep 19, 2017 at 02:07 PM
 -- Server version: 10.1.23-MariaDB-9+deb9u1
 -- PHP Version: 7.0.22-1~dotdeb+8.1
 
@@ -69,7 +69,9 @@ CREATE TABLE `user_status` (
   `completed_on` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `certificate_id` char(36) DEFAULT NULL,
-  `certificate_sent` bit(1) DEFAULT NULL
+  `certificate_sent` bit(1) DEFAULT NULL,
+  `last_memory_update` datetime DEFAULT NULL,
+  `memory` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
