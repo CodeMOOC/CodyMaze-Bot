@@ -8,7 +8,7 @@
  * Start editing here. =)
  */
 
-include 'lib.php';
+ require_once(dirname(__FILE__) . '/lib.php');
 
 // Get input contents
 // Notice: we use php://input (the HTTP request body) normally, but switch

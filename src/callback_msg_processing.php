@@ -117,8 +117,11 @@ function cardinal_message_processing($chat_id, $callback_data){
         $maze_data = generate_maze($lvl, $chat_id, $new_current_coordinate);
         $maze_arrival_position = $maze_data[1];
         $maze_message = $maze_data[0];
-        Logger::debug("maze data[0]: $maze_data[0]");
-        Logger::debug("maze data[1]: $maze_data[1]");
+        Logger::info("New instructions for level #{$lvl}: {$maze_data[0]}, destination: {$maze_data[1]}", __FILE__, $chat_id);
+
+        if(!$maze_data || empty($maze_message)) {
+            Logger::error("Empty instructions, data: " . print_r($maze_data, true), __FILE__, $chat_id);
+        }
 
         $success = db_perform_action("INSERT INTO moves (telegram_id, cell) VALUES($chat_id, '$maze_arrival_position')");
         Logger::debug("Success of insertion: {$success}");

@@ -1,7 +1,7 @@
 <?php
-require_once('data.php');
-require_once('maze_commands.php');
-require_once('maze_utility.php');
+require_once(dirname(__FILE__) . '/data.php');
+require_once(dirname(__FILE__) . '/maze_commands.php');
+require_once(dirname(__FILE__) . '/maze_utility.php');
 
 function create_random_entry_coord() {
     switch(rand(1, 4)) {
@@ -13,7 +13,7 @@ function create_random_entry_coord() {
 
         case 3:
             return coordinate_create(0, rand(0, 4), 'e');
-    
+
         case 4:
             return coordinate_create(4, rand(0, 4), 'w');
     }
