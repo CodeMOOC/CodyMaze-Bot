@@ -155,13 +155,15 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
         // User is back-tracking to an already solved position
         $target = db_scalar_query("SELECT `cell` FROM `moves` WHERE `telegram_id` = {$chat_id} ORDER BY `reached_on` DESC LIMIT 1");
 
-        if(strcmp(substr($target, 0,2), $user_position_id) === 0) {
+        if(strcmp(substr($target, 0, 2), $user_position_id) === 0) {
             request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
         }
         else {
             // Wrong destination, direct to correct target explicitly
             $target_pos = get_position_no_direction($target);
             $target_dir = get_direction($target);
+
+            Logger::info("User failed back-tracking, position '{$user_position_id}', expected '{$target}'", __FILE__, $chat_id);
 
             telegram_send_message($chat_id, "Ci siamo persi?\n\nRaggiungi la posizione <code>{$target_pos}</code> guardando verso <code>{$cardinal_position_to_name_map[$target_dir]}</code>!", array("parse_mode" => "HTML"));
         }
