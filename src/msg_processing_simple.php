@@ -49,7 +49,7 @@ function perform_command_start($chat_id, $message) {
 
     // User exists - check /start command to see if it's a valid position
     $board_pos = substr($message, 7);
-    Logger::debug("QRCode --> board position: {$board_pos}");
+    Logger::debug("Start command payload '{$board_pos}'", __FILE__, $chat_id);
 
     if ($board_pos === "" || $board_pos === null){
         // Start command with no coordinate - check if is error
@@ -365,10 +365,10 @@ function set_new_callback_keyboard($telegram_update_result) {
 
     if($telegram_update_result['message_id']) {
         $message_id = (int)$telegram_update_result['message_id'];
-        Logger::debug("Remembering {$message_id} as last callback ID", __FILE__, $chat_id);
+        Logger::debug("Remembering {$message_id} as last callback ID", __FILE__);
         $memory->lastCallbackMessageId = $message_id;
     }
     else {
-        Logger::error("telegram_send_message returned unexpected data: {$telegram_update_result}", __FILE__, $chat_id);
+        Logger::error("telegram_send_message returned unexpected data: {$telegram_update_result}", __FILE__);
     }
 }
