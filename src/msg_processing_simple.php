@@ -80,9 +80,6 @@ function perform_command_start($chat_id, $message) {
 
     // If user exists but hasn't begun the first step, send first step command
     if ($user_status === null || $user_status === false) {
-        $success = db_perform_action("INSERT INTO moves (telegram_id, reached_on, cell) VALUES($chat_id, NOW(), '$board_pos')");
-        Logger::debug("Success of insertion query: {$success}");
-
         start_command_first_step($chat_id, $board_pos);
         return;
     }
@@ -109,27 +106,29 @@ function start_command_new_conversation($chat_id) {
 }
 
 /**
- * @param $chat_id
- * @param $board_pos
+ * Handles location received as first step on board.
+ * @param $chat_id Telegram ID.
+ * @param $board_pos Two-letter coordinate on the board.
  */
-function start_command_first_step($chat_id, $board_pos){
-    Logger::debug("Start first step - board position {$board_pos}");
+function start_command_first_step($chat_id, $board_pos) {
     global $cardinal_position_to_name_map;
+
+    Logger::debug("Attempting first step on board at position {$board_pos}", __FILE__);
     $cardinal_pos = coordinate_find_initial_direction($board_pos);
 
-    if($cardinal_pos == null){
-        // Remove record and warn user of wrong position
-        $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND cell = '{$board_pos}'");
-        Logger::debug("Removed record on wrong beginning position: {$success}");
+    if($cardinal_pos == null) {
+        Logger::error("Wrong initial position {$board_pos}", __FILE__, $chat_id);
 
-        telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.\n");
-    } else {
-        // Update db with initial cardinal position
-        $full_pos = mb_strtolower($board_pos.$cardinal_pos);
-        db_perform_action("UPDATE moves SET cell = '$full_pos' WHERE telegram_id = {$chat_id} ORDER BY reached_on ASC");
+        telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.");
+    }
+    else {
+        $full_pos = $board_pos.$cardinal_pos;
+        Logger::debug("Valid initial coordinates: {$full_pos}", __FILE__, $chat_id);
 
-        $row_column_pos = substr($board_pos, 0, 2);
-        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in <code>{$row_column_pos}</code>! Ora dovresti posizionarti in modo da guardare verso <code>{$cardinal_pos}</code> se non lo stai già facendo.\n\n", array("parse_mode" => "HTML"));
+        $success = db_perform_action("INSERT INTO `moves` (`telegram_id`, `reached_on`, `cell`) VALUES($chat_id, NULL, '$full_pos')");
+        Logger::debug("Database insertion of initial position: {$success}", __FILE__, $chat_id);
+
+        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in <code>{$board_pos}</code>! Ora dovresti posizionarti in modo da guardare verso <code>" . $cardinal_position_to_name_map[$cardinal_pos] . "</code> se non lo stai già facendo.", array("parse_mode" => "HTML"));
 
         request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
     }

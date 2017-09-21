@@ -200,22 +200,20 @@ function coordinate_standard_crawler($coordinate, $prefer_right = true) {
     }
 }
 
-function coordinate_find_initial_direction($position){
-    global $cardinal_position_to_name_map;
-
+function coordinate_find_initial_direction($position) {
     $column = substr($position, 0, 1);
     $row = substr($position, 1, 1);
     Logger::debug("Initial position: {$column}{$row}", __FILE__);
 
     if($column == 'a')
-        return $cardinal_position_to_name_map['e'];
+        return 'e';
     elseif($column == 'e')
-        return $cardinal_position_to_name_map['w'];
+        return 'w';
     else {
         if($row == '1')
-            return $cardinal_position_to_name_map['s'];
+            return 's';
         elseif($row == '5')
-            return $cardinal_position_to_name_map['n'];
+            return 'n';
         else {
             Logger::error("User in initial position {$column}{$row} is not on maze border", __FILE__);
             return null;
