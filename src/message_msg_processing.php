@@ -40,17 +40,17 @@ function message_msg_processing($message) {
             if (strpos($text, "/start") === 0) {
                 perform_command_start($chat_id, mb_strtolower($text));
             }
-            else if($text == "/send_certificates" && $chat_id == 212567799){
-                $result = db_table_query("SELECT * FROM user_status");
+            else if($text == "/send_my_certificates"){
+                $result = db_table_query("SELECT * FROM certificates_list WHERE telegram_id = '{$chat_id}'");
                 if($result !== null && $result !== false){
                     foreach ($result as $item) {
-                        $pdf_path = "certificates/" . $item[USER_STATUS_CERTIFICATE_ID] . ".pdf";
-                        $user_id = $item[0];
-                        if($item[USER_STATUS_COMPLETED] == 1 && $item[USER_STATUS_CERTIFICATE_SENT] == 0) {
-                            Logger::debug("Sending certificate to {$item[USER_STATUS_NAME]}");
-                            $result = telegram_send_document($user_id, $pdf_path, "Certificato di Completamento");
-                        }
+                        $pdf_path = "certificates/" . $item[0] . ".pdf";
+                        $short_guid = substr($item[0], 0, 18);
+
+                        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento. Codice certificato: {$short_guid}");
                     }
+                } else {
+                    telegram_send_message($chat_id, "Non hai ancora completato il CodyMaze, non hai alcun certificato assegnato :(.");
                 }
             }
             else {

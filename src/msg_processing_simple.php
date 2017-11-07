@@ -254,8 +254,9 @@ function send_pdf($chat_id, $name){
 
         // update certificates_list
         $result = db_perform_action("INSERT INTO `certificates_list` (`certificate_id`, `telegram_id`, `name`, `date`) VALUES ('" . db_escape($guid) . "', {$chat_id}, '" . db_escape($name) . "', NOW())");
+        $short_guid = substr($guid, 0, 18);
 
-        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento");
+        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento. Codice certificato: {$short_guid}");
         if($result !== false) {
             Logger::info("Generated and sent certificate {$guid}", __FILE__, $chat_id);
 
