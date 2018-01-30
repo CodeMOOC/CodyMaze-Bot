@@ -60,3 +60,12 @@ function starts_with($text = '', $substring = '') {
 function extract_command_payload($text = '') {
     return mb_ereg_replace("^\/[a-zA-Z0-9_]*( |$)", '', $text);
 }
+
+function clamp($min, $max, $value) {
+    if($value < $min)
+        return $min;
+    else if($value > $max)
+        return $max;
+    else
+        return $value;
+}

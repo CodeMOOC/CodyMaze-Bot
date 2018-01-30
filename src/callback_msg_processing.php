@@ -9,6 +9,7 @@ function callback_msg_processing($callback) {
     $message_id = $callback['message']['message_id'];
 
     memory_load_for_user($chat_id);
+    localization_load_user($chat_id, $callback['message']['from']['language_code']);
 
     if(isset($memory->lastCallbackMessageId) && $message_id == $memory->lastCallbackMessageId) {
         // Clear memory

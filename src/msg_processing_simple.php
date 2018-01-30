@@ -9,6 +9,7 @@
  */
 
 require_once(dirname(__FILE__) . '/data.php');
+require_once(dirname(__FILE__) . '/lib.php');
 require_once(dirname(__FILE__) . '/callback_msg_processing.php');
 require_once(dirname(__FILE__) . '/message_msg_processing.php');
 require_once(dirname(__FILE__) . '/debug_msg_processing.php');
@@ -319,27 +320,6 @@ function request_name($chat_id, $name) {
 function reset_game($chat_id) {
     db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
     db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
-}
-
-function catastrofical_failure($chat_id) {
-    reset_game($chat_id);
-
-    telegram_send_message($chat_id, "Ops! Sembra che ci sia stato un errore. Ti chiediamo di ricominciare da capo. 😞");
-}
-
-/**
- * @param $min
- * @param $max
- * @param $value
- * @return mixed
- */
-function clamp($min, $max, $value) {
-    if($value < $min)
-        return $min;
-    else if($value > $max)
-        return $max;
-    else
-        return $value;
 }
 
 /**

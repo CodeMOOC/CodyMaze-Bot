@@ -7,10 +7,12 @@ function message_msg_processing($message) {
     $chat_id = $message['chat']['id'];
 
     memory_load_for_user($chat_id);
+    localization_load_user($chat_id, $message['from']['language_code']);
 
     if (isset($message['text'])) {
         // We got an incoming text message
         $text = $message['text'];
+
         // Get user info to see if he has reached end of game
         $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = $chat_id LIMIT 1");
 
@@ -18,10 +20,16 @@ function message_msg_processing($message) {
             reset_game($chat_id);
             telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\nScrivi /start per ricomincare o scansiona un QRCode del CodyMaze.");
         }
-        else if (strpos($text, "/debug") === 0) {
+        else if(strpos($text, "/debug") === 0) {
             // Debugging commands received
             telegram_send_message($chat_id, "Received debug command...");
             debug_message_processing($chat_id, $text);
+        }
+        else if(starts_with($text, '/language ')) {
+            $lang_code = extract_command_payload($text);
+            localization_switch_and_persist_locale($chat_id, $lang_code);
+
+            telegram_send_message($chat_id, __('Switched language.'));
         }
         else if($user_info[USER_STATUS_COMPLETED] == 1) {
             // Game is completed

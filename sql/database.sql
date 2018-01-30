@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 19, 2017 at 02:07 PM
--- Server version: 10.1.23-MariaDB-9+deb9u1
--- PHP Version: 7.0.22-1~dotdeb+8.1
+-- Generation Time: Jan 29, 2018 at 11:42 PM
+-- Server version: 10.1.26-MariaDB-0+deb9u1
+-- PHP Version: 7.0.27-0+deb9u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -70,6 +70,7 @@ CREATE TABLE `user_status` (
   `name` varchar(255) DEFAULT NULL,
   `certificate_id` char(36) DEFAULT NULL,
   `certificate_sent` bit(1) DEFAULT NULL,
+  `language_code` varchar(5) DEFAULT NULL,
   `last_memory_update` datetime DEFAULT NULL,
   `memory` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
