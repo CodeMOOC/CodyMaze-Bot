@@ -288,8 +288,8 @@ function request_name($chat_id, $name) {
 }
 
 function reset_game($chat_id) {
-    db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
-    db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
+    db_perform_action("DELETE FROM `moves` WHERE `telegram_id` = {$chat_id}");
+    db_perform_action("UPDATE `user_status` SET `completed` = 0, `completed_on` = NULL, `name` = NULL, `certificate_id` = NULL, `certificate_sent` = 0, `last_memory_update` = NULL, `memory` = '' WHERE `telegram_id` = $chat_id");
 }
 
 function get_position_no_direction($position){
