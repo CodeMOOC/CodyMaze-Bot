@@ -5,3 +5,4 @@ src/vendor/*
 src/config.php
 src/pull-last-update\.txt
 \.vscode/
+*.mo
