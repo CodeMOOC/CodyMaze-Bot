@@ -9,17 +9,20 @@ function callback_msg_processing($callback) {
     $message_id = $callback['message']['message_id'];
 
     memory_load_for_user($chat_id);
-    localization_load_user($chat_id, $callback['message']['from']['language_code']);
+    localization_load_user($chat_id, (isset($callback['message']['from']['language_code'])) ? $callback['message']['from']['language_code'] : null);
 
     if(isset($memory->lastCallbackMessageId) && $message_id == $memory->lastCallbackMessageId) {
         // Clear memory
         unset($memory->lastCallbackMessageId);
 
-        if(strpos($callback_data, 'card ') === 0) {
+        if(starts_with($callback_data, 'card ')) {
             cardinal_message_processing($chat_id, $callback_data);
         }
-        else if(strpos($callback_data, 'name ') === 0) {
+        else if(starts_with($callback_data, 'name ')) {
             name_message_processing($chat_id, $callback_data);
+        }
+        else if(starts_with($callback_data, 'language ')) {
+            localization_message_processing($chat_id, $callback_data);
         }
         else {
             Logger::error("Unknown callback, data: {$callback_data}", __FILE__, $chat_id);
@@ -143,4 +146,11 @@ function name_message_processing($chat_id, $callback_data) {
         unset($memory->nameRequested);
         send_pdf($chat_id, $data);
     }
+}
+
+function localization_message_processing($chat_id, $callback_data) {
+    $lang_code = substr($callback_data, mb_strlen('language '));
+    localization_switch_and_persist_locale($chat_id, $lang_code);
+
+    telegram_send_message($chat_id, __("Switched language."));
 }

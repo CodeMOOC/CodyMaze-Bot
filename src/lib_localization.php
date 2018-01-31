@@ -98,6 +98,8 @@ function localization_load_user($telegram_id, $chat_language_code) {
 function localization_switch_and_persist_locale($telegram_id, $language_code) {
     $real_language_code = localization_set_locale($language_code);
 
+    Logger::debug("Switching and persisting to {$real_language_code}", __FILE__);
+
     $update_result = db_perform_action("UPDATE `user_status` SET `language_code` = '" . db_escape($real_language_code) . "' WHERE `telegram_id` = {$telegram_id}");
     if($update_result === false) {
         Logger::warning("Failed to update localization setting", __FILE__, $telegram_id);

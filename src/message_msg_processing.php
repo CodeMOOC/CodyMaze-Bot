@@ -25,11 +25,29 @@ function message_msg_processing($message) {
             telegram_send_message($chat_id, "Received debug command...");
             debug_message_processing($chat_id, $text);
         }
-        else if(starts_with($text, '/language ')) {
-            $lang_code = extract_command_payload($text);
-            localization_switch_and_persist_locale($chat_id, $lang_code);
+        else if($text === '/setlanguage') {
+            // Prep language keyboard
+            $lang_keyboard = array();
+            $i = 0;
+            foreach(LANGUAGE_NAME_MAP as $code => $lang) {
+                if($i % 3 == 0) {
+                    $lang_keyboard[] = array();
+                }
+                $lang_keyboard[sizeof($lang_keyboard) - 1][] = array(
+                    'text' => $lang,
+                    'callback_data' => 'language ' . $code
+                );
 
-            telegram_send_message($chat_id, __('Switched language.'));
+                $i++;
+            }
+
+            $response = telegram_send_message($chat_id, __("Which language do you speak?"), array(
+                'reply_markup' => array(
+                    'inline_keyboard' => $lang_keyboard
+                )
+            ));
+
+            set_new_callback_keyboard($response);
         }
         else if($user_info[USER_STATUS_COMPLETED] == 1) {
             // Game is completed
