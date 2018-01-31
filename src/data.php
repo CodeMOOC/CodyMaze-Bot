@@ -17,15 +17,6 @@ define('CARD_ANSWERING_QUIZ', 't');
 define('CARD_NOT_ANSWERING_QUIZ', 'f');
 define('CARD_ENDGAME_POSITION', 'e');
 
-$cardinal_code = array(
-    "n",
-    "s",
-    "e",
-    "w"
-);
-
-$board_code = generate_board_code();
-
 $cardinal_position_to_name_map = array(
     "n" => "Nord",
     "s" => "Sud",

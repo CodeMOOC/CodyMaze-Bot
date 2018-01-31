@@ -32,10 +32,6 @@ else if(isset($update['callback_query'])) {
     callback_msg_processing($update['callback_query']);
 }
 
-/**
- * @param $chat_id
- * @param $message
- */
 function perform_command_start($chat_id, $message) {
     Logger::debug("Start command");
 
@@ -89,9 +85,6 @@ function perform_command_start($chat_id, $message) {
     start_command_continue_conversation($chat_id, $board_pos);
 }
 
-/**
- * @param $chat_id
- */
 function start_command_new_conversation($chat_id) {
     Logger::debug("Start new conversation");
 
@@ -135,10 +128,6 @@ function start_command_first_step($chat_id, $board_pos) {
     }
 }
 
-/**
- * @param $chat_id
- * @param null $user_position_id
- */
 function start_command_continue_conversation($chat_id, $user_position_id = null) {
     Logger::debug("Resuming old conversation");
 
@@ -198,7 +187,6 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
             // Wrong answer - remove end of maze position tuple and send back to last position for new maze
             $success = db_perform_action("DELETE FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
-            // TODO db_perform_action("UPDATE moves SET reached_on = NULL WHERE telegram_id = {$chat_id} ORDER BY reached_on DESC LIMIT 1");
 
             Logger::debug("Success of remove query: {$success}");
 
@@ -209,16 +197,13 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
         }
     }
     else {
-        //This should never happen because of the cardinal position request
+        // This should never happen because of the cardinal position request
         Logger::warning("Continuing conversation with {$user_game_status} reached steps, ending game", __FILE__, $chat_id);
 
         end_of_game($chat_id);
     }
 }
 
-/**
- * @param $chat_id
- */
 function end_of_game($chat_id) {
     global $memory;
     $memory->nameRequested = true;
@@ -228,10 +213,6 @@ function end_of_game($chat_id) {
     telegram_send_message($chat_id, "Scrivi il nome e cognome da visualizzare sul certificato di completamento:");
 }
 
-/**
- * @param $chat_id
- * @param $name
- */
 function send_pdf($chat_id, $name){
     Logger::info("Game completed", __FILE__, $chat_id);
 
@@ -272,10 +253,6 @@ function send_pdf($chat_id, $name){
     }
 }
 
-/**
- * @param $chat_id
- * @param $state
- */
 function request_cardinal_position($chat_id, $state) {
     set_new_callback_keyboard(telegram_send_message($chat_id, "In che direzione stai guardando?",
         array("reply_markup" => array(
@@ -295,10 +272,6 @@ function request_cardinal_position($chat_id, $state) {
     ));
 }
 
-/**
- * @param $chat_id
- * @param $name
- */
 function request_name($chat_id, $name) {
     set_new_callback_keyboard(telegram_send_message($chat_id, "Confermi che il nome inviato è {$name}?",
         array("reply_markup" => array(
@@ -314,26 +287,15 @@ function request_name($chat_id, $name) {
     ));
 }
 
-/**
- * @param $chat_id
- */
 function reset_game($chat_id) {
     db_perform_action("DELETE FROM moves WHERE telegram_id = $chat_id");
     db_perform_action("DELETE FROM user_status WHERE telegram_id = $chat_id");
 }
 
-/**
- * @param $position
- * @return bool|string
- */
 function get_position_no_direction($position){
     return substr($position, 0,2);
 }
 
-/**
- * @param $position
- * @return bool|string
- */
 function get_direction($position){
     return substr($position, 2,1);
 }
