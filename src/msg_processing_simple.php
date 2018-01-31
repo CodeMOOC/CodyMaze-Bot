@@ -45,43 +45,30 @@ function perform_command_start($chat_id, $message) {
     }
 
     // User exists - check /start command to see if it's a valid position
-    $board_pos = substr($message, 7);
-    Logger::debug("Start command payload '{$board_pos}'", __FILE__, $chat_id);
+    $board_pos = substr($message, mb_strlen('/start '));
+    Logger::debug("Start command payload: '{$board_pos}'", __FILE__, $chat_id);
 
-    if ($board_pos === "" || $board_pos === null){
-        // Start command with no coordinate - check if is error
-        $user_info = db_row_query("SELECT * FROM user_status WHERE telegram_id = {$chat_id} LIMIT 1");
-        if($user_info[1] == 0){
-            // Error - wrong /start command
-            telegram_send_message($chat_id, "Ops! Sembra che mi sia arrivato un comando sbagliato, prova a fare una nuova scansione!\n");
-        } else {
-            if($user_info[2] === null){
-                // Error - waiting for user's name
-                telegram_send_message($chat_id, "Ops! Se non erro dovresti indicarmi il tuo nome ora, prova a riscrivermelo!\n");
-            }
-        }
+    if (!$board_pos || mb_strlen($board_pos) != 2) {
+        // Start command with wrong coordinates
+        telegram_send_message(
+            $chat_id,
+            __("Hmmm, the command you sent is not valid. Try scanning the CodyMaze QR Code again."),
+            array("parse_mode" => "HTML")
+        );
         return;
     }
 
     // Get user's position from db if available
-    $user_status = db_scalar_query("SELECT telegram_id FROM moves WHERE telegram_id = {$chat_id} LIMIT 1");
-    Logger::debug("Telegram user: {$user_status}");
-
-    // Check if user has a last position
-    $last_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
-    Logger::debug("User's last position: {$last_position}");
-
-    // Check if there's an open maze being solved
-    $has_null_timestamp = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL");
-    Logger::debug("User has null timestamp: {$has_null_timestamp}");
+    $user_status = db_scalar_query("SELECT `telegram_id` FROM `moves` WHERE `telegram_id` = {$chat_id} LIMIT 1");
+    Logger::debug("Telegram user in DB: {$user_status}");
 
     // If user exists but hasn't begun the first step, send first step command
-    if ($user_status === null || $user_status === false) {
+    if(!$user_status) {
         start_command_first_step($chat_id, $board_pos);
         return;
     }
 
-    // If all else fails, then the game is in progress
+    // Otherwise, the game is in progress
     start_command_continue_conversation($chat_id, $board_pos);
 }
 
@@ -90,13 +77,14 @@ function start_command_new_conversation($chat_id) {
 
     $move_count = db_scalar_query("SELECT count(*) FROM `moves` WHERE `telegram_id` = {$chat_id}");
 
-    $txt = "Ciao, sono il bot CodyMaze! 🤖";
+    $txt = __("Hello, I am the <b>CodyMaze</b> bot!") . ' 🤖';
     if($move_count === 0) {
-        $txt .= "\n\nPosizionati lungo il bordo della scacchiera e scansiona un QRCode!";
+        $txt .= "\n\n";
+        $txt .= __("Please go to any of the grid’s outer squares and scan the QR Code you find there.");
     }
 
     // Send message to user
-    telegram_send_message($chat_id, $txt);
+    telegram_send_message($chat_id, $txt, array("parse_mode" => "HTML"));
 }
 
 /**
@@ -105,15 +93,16 @@ function start_command_new_conversation($chat_id) {
  * @param $board_pos Two-letter coordinate on the board.
  */
 function start_command_first_step($chat_id, $board_pos) {
-    global $cardinal_position_to_name_map;
-
     Logger::debug("Attempting first step on board at position {$board_pos}", __FILE__);
     $cardinal_pos = coordinate_find_initial_direction($board_pos);
 
     if($cardinal_pos == null) {
         Logger::error("Wrong initial position {$board_pos}", __FILE__, $chat_id);
 
-        telegram_send_message($chat_id, "Ops! Dovresti posizionarti lungo il perimetro della scacchiera per iniziare.");
+        telegram_send_message(
+            $chat_id,
+            __("Whoops! You should start from any of the grid’s outer squares.")
+        );
     }
     else {
         $full_pos = $board_pos.$cardinal_pos;
@@ -122,7 +111,10 @@ function start_command_first_step($chat_id, $board_pos) {
         $success = db_perform_action("INSERT INTO `moves` (`telegram_id`, `reached_on`, `cell`) VALUES($chat_id, NULL, '$full_pos')");
         Logger::debug("Database insertion of initial position: {$success}", __FILE__, $chat_id);
 
-        telegram_send_message($chat_id, "Benissimo, hai trovato il blocco di partenza in <code>{$board_pos}</code>! Ora dovresti posizionarti in modo da guardare verso <code>" . $cardinal_position_to_name_map[$cardinal_pos] . "</code> se non lo stai già facendo.", array("parse_mode" => "HTML"));
+        telegram_send_message($chat_id,
+            sprintf(__("Very well, you’re at the starting position in <code>%s</code>! Now please turn in order to face <i>%s</i>."), $board_pos, cardinal_direction_to_description($cardinal_pos)),
+            array("parse_mode" => "HTML")
+        );
 
         request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
     }
@@ -130,8 +122,6 @@ function start_command_first_step($chat_id, $board_pos) {
 
 function start_command_continue_conversation($chat_id, $user_position_id = null) {
     Logger::debug("Resuming old conversation");
-
-    global $cardinal_position_to_name_map;
 
     // Get current game position of user
     $reached_count = db_scalar_query("SELECT COUNT(*) FROM `moves` WHERE `telegram_id` = {$chat_id} AND `reached_on` IS NOT NULL");
@@ -154,13 +144,16 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
             Logger::info("User failed back-tracking, position '{$user_position_id}', expected '{$target}'", __FILE__, $chat_id);
 
-            telegram_send_message($chat_id, "Ci siamo persi?\n\nRaggiungi la posizione <code>{$target_pos}</code> guardando verso <code>{$cardinal_position_to_name_map[$target_dir]}</code>!", array("parse_mode" => "HTML"));
+            telegram_send_message($chat_id,
+                sprintf(__("Did you get lost?\n\nPlease reach square <code>%s</code> and face <i>%s</i> to continue!"), $target_pos, cardinal_direction_to_description($target_dir)),
+                array("parse_mode" => "HTML")
+            );
         }
 
         return;
     }
 
-    // User has a tuple with null timestamp: he's solving a maze
+    // User has a tuple with null timestamp: he/she's solving a maze
     // AND if position is == NUMBER_OF_GAMES, it's the end of the game
     if($user_game_status < NUMBER_OF_GAMES) {
         $answer = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NULL LIMIT 1");
@@ -193,7 +186,12 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
             $previous_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} ORDER BY reached_on DESC LIMIT 1");
             $previous_position_no_direction = get_position_no_direction($previous_position);
             $previous_position_direction = get_direction($previous_position);
-            telegram_send_message($chat_id, "Ops! Hai sbagliato!\n\nRitorna alla posizione <code>{$previous_position_no_direction}</code> guardando verso <code>{$cardinal_position_to_name_map[$previous_position_direction]}</code> e scansiona nuovamente il codice.", array("parse_mode" => "HTML"));
+
+            telegram_send_message(
+                $chat_id,
+                sprintf(__("Whoops, wrong!\n\nGet back to position <code>%s</code>, turn to face <i>%s</i>, and scan the QR Code again."), $previous_position_no_direction, $cardinal_direction_to_description($previous_position_direction)),
+                array("parse_mode" => "HTML")
+            );
         }
     }
     else {
@@ -208,9 +206,10 @@ function end_of_game($chat_id) {
     global $memory;
     $memory->nameRequested = true;
 
-    $result = db_perform_action("UPDATE user_status SET completed = 1 WHERE telegram_id = {$chat_id}");
-    telegram_send_message($chat_id, "Complimenti! Hai completato CodyMaze! 👏");
-    telegram_send_message($chat_id, "Scrivi il nome e cognome da visualizzare sul certificato di completamento:");
+    db_perform_action("UPDATE user_status SET completed = 1 WHERE telegram_id = {$chat_id}");
+
+    telegram_send_message($chat_id, __("Congratulations! You’ve completed <b>CodyMaze</b>!") . ' 👏', array("parse_mode" => "HTML"));
+    telegram_send_message($chat_id, __("Write down your full name for the completion certificate:"), array("parse_mode" => "HTML"));
 }
 
 function send_pdf($chat_id, $name){
@@ -238,14 +237,14 @@ function send_pdf($chat_id, $name){
         $result = db_perform_action("INSERT INTO `certificates_list` (`certificate_id`, `telegram_id`, `name`, `date`) VALUES ('" . db_escape($guid) . "', {$chat_id}, '" . db_escape($name) . "', NOW())");
         $short_guid = substr($guid, 0, 18);
 
-        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento. Codice certificato: {$short_guid}");
+        $result = telegram_send_document($chat_id, $pdf_path, sprintf(__("Completion certificate. Code: %s."), $short_guid));
         if($result !== false) {
             Logger::info("Generated and sent certificate {$guid}", __FILE__, $chat_id);
 
             // remove temp pdf
             unlink($pdf_path);
 
-            telegram_send_message($chat_id, "Grazie per aver giocato con CodyMaze!");
+            telegram_send_message($chat_id, __("Thanks for playing!"), array("parse_mode" => "HTML"));
         }
     }
     else {
@@ -254,18 +253,20 @@ function send_pdf($chat_id, $name){
 }
 
 function request_cardinal_position($chat_id, $state) {
-    set_new_callback_keyboard(telegram_send_message($chat_id, "In che direzione stai guardando?",
+    set_new_callback_keyboard(telegram_send_message(
+        $chat_id,
+        __("What direction are you facing?"),
         array("reply_markup" => array(
             "inline_keyboard" => array(
                 array(
-                    array("text" => "Nord", "callback_data" => "card n {$state}"),
+                    array("text" => __("North"), "callback_data" => "card n {$state}"),
                 ),
                 array(
-                    array("text" => "Ovest", "callback_data" => "card w {$state}"),
-                    array("text" => "Est", "callback_data" => "card e {$state}")
+                    array("text" => __("West"), "callback_data" => "card w {$state}"),
+                    array("text" => __("East"), "callback_data" => "card e {$state}")
                 ),
                 array(
-                    array("text" => "Sud", "callback_data" => "card s {$state}"),
+                    array("text" => __("South"), "callback_data" => "card s {$state}"),
                 )
             )
         ))
@@ -273,14 +274,16 @@ function request_cardinal_position($chat_id, $state) {
 }
 
 function request_name($chat_id, $name) {
-    set_new_callback_keyboard(telegram_send_message($chat_id, "Confermi che il nome inviato è {$name}?",
+    set_new_callback_keyboard(telegram_send_message(
+        $chat_id,
+        sprintf(__("Your full name is %s. Is this correct?"), $name),
         array("reply_markup" => array(
             "inline_keyboard" => array(
                 array(
-                    array("text" => "Sì", "callback_data" => "name {$name}"),
+                    array("text" => __("Yes"), "callback_data" => "name {$name}"),
                 ),
                 array(
-                    array("text" => "No", "callback_data" => "name error"),
+                    array("text" => __("No"), "callback_data" => "name error"),
                 )
             )
         ))

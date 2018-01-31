@@ -1,0 +1,160 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: codymaze-bot\n"
+"PO-Revision-Date: 2018-01-31 06:38-0500\n"
+"Last-Translator: LorenzCK <lck@klopfenstein.net>\n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"POT-Creation-Date: 2018-01-30 16:25+0100\n"
+"X-Crowdin-Project: codymaze-bot\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: text.pot\n"
+"Language: it_IT\n"
+
+# User direction confirmation, %s is direction
+msgid "Ok, you’re looking %s!"
+msgstr "Ok, stai guardando %s!"
+
+# Backtracking instructions, parameters 1: destination block, 2: direction
+msgid "Move back to block <code>%s</code>, face <i>%s</i> and scan the QR Code again."
+msgstr "Torna indietro alla casella <code>%s</code>, girati <i>%s</i> e scansiona nuovamente il QR Code."
+
+# User is facing wrong direction
+msgid "Please face <i>%s</i>."
+msgstr "Prego, girati <i>%s</i>."
+
+# Confirmation on reaching current destination
+msgid "Very well! You have found the right spot."
+msgstr "Molto bene! Hai trovato la casella giusta."
+
+# Code instructions for current step, parameters 1: step number, 2: code instruction
+msgid "<b>%d.</b> Follow these instructions and scan the QR Code at the destination:\n"
+"<code>%s</code>"
+msgstr "<b>%d.</b> Segui queste istruzioni e scansiona il QR Code all’arrivo:\n"
+"<code>%s</code>"
+
+# Invalid code when receiving the user's direction (should never occur)
+msgid "Invalid code."
+msgstr "Codice non valido."
+
+# Prompt for user name again
+msgid "Write your full name again, please:"
+msgstr "Scrivi di nuovo il tuo nome completo, per favore:"
+
+# Reset confirmation
+msgid "Your progress has been reset.\n"
+"Write /start to start anew or scan in a QR Code."
+msgstr "Il tuo progresso è stato resettato.\n"
+"Scrivi /start per cominciare da capo o scansiona un QR Code sulla scacchiera."
+
+# Language switch confirmation
+msgid "Switched language."
+msgstr "Lingua impostata."
+
+# Final destintion reached
+msgid "You completed CodyMaze!\n"
+"If you want to play again, please send the /reset command."
+msgstr "Hai completato CodyMaze!\n"
+"Se intendi giocare di nuovo, invia il comando /reset."
+
+# Error when requesting certificates if no certificate was generated
+msgid "You’ve never completed CodyMaze yet, I have no certificate to send you."
+msgstr "Non hai mai completato CodyMaze ancora, non ho nessun certificato da inviarti."
+
+# Error while receiving (unrequested) text from user
+msgid "Didn’t get that. Please scan one of the QR Codes in the maze."
+msgstr "Non ho capito. Prego, scansiona uno dei QR Code della scacchiera."
+
+# Error, scanned in a code but does not match any valid coordinate
+msgid "Hmmm, the command you sent is not valid. Try scanning the CodyMaze QR Code again."
+msgstr "Hmmm, il comando inviato non è valido. Riprova a scansionare il QR Code di CodyMaze."
+
+# Error when receiving unsupported messages (picture, audio, etc.)
+msgid "I don’t understand this kind of message!"
+msgstr "Non capisco questo tipo di messaggi!"
+
+# Caption for attachment (certificate transmission)
+msgid "Completion certificate. Code: %s."
+msgstr "Certificato di completamento. Codice: %s."
+
+# Prompt for target language in /setlanguage command
+msgid "Which language do you speak?"
+msgstr "Che lingua parli?"
+
+# Hello message, in response to /start
+msgid "Hello, I am the <b>CodyMaze</b> bot!"
+msgstr "Ciao, sono il bot <b>CodyMaze</b>!"
+
+# Instructions for first-time users, in response to /start
+msgid "Please go to any of the grid’s outer squares and scan the QR Code you find there."
+msgstr "Posizionati lungo il bordo della scacchiera e scansiona uno dei QR Code."
+
+# Error message when starting from an inner square
+msgid "Whoops! You should start from any of the grid’s outer squares."
+msgstr "Ops! Dovresti iniziare da un riquadro lungo il bordo della scacchiera."
+
+# Confirmation when starting position is reached, parameters 1: square code, 2: target direction
+msgid "Very well, you’re at the starting position in <code>%s</code>! Now please turn in order to face <i>%s</i>."
+msgstr "Molto bene, sei al blocco di partenza in <code>%s</code>! Ora girati <i>%s</i>, per favore."
+
+# Error message, wrong position reached, starts backtracking to previous position
+msgid "Whoops, wrong!\n\n"
+"Get back to position <code>%s</code>, turn to face <i>%s</i>, and scan the QR Code again."
+msgstr "Ops, sbagliato!\n\n"
+"Ritorna al blocco <code>%s</code>, girati <i>%s</i> e scansiona nuovamente il QR Code."
+
+# Error message while backtracking, sends instructions to get to a valid position
+msgid "Did you get lost?\n\n"
+"Please reach square <code>%s</code> and face <i>%s</i> to continue!"
+msgstr "Ti sei perso?\n\n"
+"Raggiungi il blocco <code>%s</code> e girati <i>%s</i> per continuare!"
+
+msgid "Congratulations! You’ve completed <b>CodyMaze</b>!"
+msgstr "Congratulazioni! Hai completato <b>CodyMaze</b>!"
+
+msgid "Write down your full name for the completion certificate:"
+msgstr "Scrivi il tuo nome completo per il certificato di completamento:"
+
+msgid "Thanks for playing!"
+msgstr "Grazie per aver giocato con me!"
+
+msgid "What direction are you facing?"
+msgstr "In che direzione stai guardando?"
+
+msgid "North"
+msgstr "Nord"
+
+msgid "East"
+msgstr "Est"
+
+msgid "South"
+msgstr "Sud"
+
+msgid "West"
+msgstr "Ovest"
+
+msgid "northwards"
+msgstr "verso nord"
+
+msgid "eastwards"
+msgstr "verso est"
+
+msgid "southwards"
+msgstr "verso sud"
+
+msgid "westwards"
+msgstr "verso ovest"
+
+msgid "Your full name is %s. Is this correct?"
+msgstr "Il tuo nome è %s. È corretto?"
+
+msgid "Yes"
+msgstr "Sì"
+
+msgid "No"
+msgstr "No"
+

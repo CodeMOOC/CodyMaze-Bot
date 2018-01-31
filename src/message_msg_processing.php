@@ -1,4 +1,6 @@
 <?php
+require_once(dirname(__FILE__) . '/lib_localization.php');
+
 function message_msg_processing($message) {
     global $memory;
 
@@ -18,7 +20,7 @@ function message_msg_processing($message) {
 
         if ($text === "/reset"){
             reset_game($chat_id);
-            telegram_send_message($chat_id, "Il tuo progresso è stato resettato.\nScrivi /start per ricomincare o scansiona un QRCode del CodyMaze.");
+            telegram_send_message($chat_id, __("Your progress has been reset.\nWrite /start to start anew or scan in a QR Code."));
         }
         else if(strpos($text, "/debug") === 0) {
             // Debugging commands received
@@ -57,7 +59,7 @@ function message_msg_processing($message) {
                 request_name($chat_id, $text);
             }
             else {
-                telegram_send_message($chat_id, "Hai completato CodyMaze!\nSe vuoi giocare nuovamente, invia il comando /reset.");
+                telegram_send_message($chat_id, __("You completed CodyMaze!\nIf you want to play again, please send the /reset command."));
             }
         }
         else {
@@ -73,20 +75,30 @@ function message_msg_processing($message) {
                         $pdf_path = "certificates/" . $item[0] . ".pdf";
                         $short_guid = substr($item[0], 0, 18);
 
-                        $result = telegram_send_document($chat_id, $pdf_path, "Certificato di Completamento. Codice certificato: {$short_guid}");
+                        $result = telegram_send_document(
+                            $chat_id,
+                            $pdf_path,
+                            sprintf(__("Completion certificate. Code: %s."), $short_guid)
+                        );
                     }
                 } else {
-                    telegram_send_message($chat_id, "Non hai ancora completato il CodyMaze, non hai alcun certificato assegnato :(.");
+                    telegram_send_message(
+                        $chat_id,
+                        __("You’ve never completed CodyMaze yet, I have no certificate to send you.") . ' 😔'
+                    );
                 }
             }
             else {
                 // User is probably writing something instead of playing
-                telegram_send_message($chat_id, "Non ho capito. Scansionare un QRCode del labirinto per continuare a giocare.");
+                telegram_send_message(
+                    $chat_id,
+                    __("Didn’t get that. Please scan one of the QR Codes in the maze.")
+                );
             }
         }
     }
     else {
-        telegram_send_message($chat_id, "Uhm… non capisco questo tipo di messaggi! 😑\nPer riprovare invia /start o scansiona un QRCode.");
+        telegram_send_message($chat_id, __("I don’t understand this kind of message!"));
     }
 
     memory_persist($chat_id);

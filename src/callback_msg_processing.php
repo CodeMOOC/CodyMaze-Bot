@@ -37,14 +37,16 @@ function callback_msg_processing($callback) {
 
 function cardinal_message_processing($chat_id, $callback_data){
     // Get cardinal position
-    global $cardinal_position_to_name_map;
     $card_code = substr($callback_data, 5, 1);
     $cardinal_info = substr($callback_data, 7, 1);
 
     Logger::debug("Position {$card_code}, direction {$cardinal_info}", __FILE__, $chat_id);
 
-    if(isset($cardinal_position_to_name_map[$card_code])) {
-        telegram_send_message($chat_id, "Ok, al momento stai guardando verso {$cardinal_position_to_name_map[$card_code]}!");
+    if(cardinal_direction_is_valid($card_code)) {
+        telegram_send_message(
+            $chat_id,
+            sprintf(__("Ok, you’re looking %s!"), cardinal_direction_to_description($card_code))
+        );
 
         // Get current game state
         $user_status = db_scalar_query("SELECT COUNT(*) FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL");
@@ -84,14 +86,24 @@ function cardinal_message_processing($chat_id, $callback_data){
                 $last_position_no_direction = get_position_no_direction($beginning_position);
                 $last_position_direction = get_direction($beginning_position);
 
-                telegram_send_message($chat_id, "Stai guardando nella direzione sbagliata! 🙁 Riposizionati sul blocco <code>{$last_position_no_direction}</code> guardando verso <code>{$cardinal_position_to_name_map[$last_position_direction]}</code> e scansiona nuovamente il QRCode.", array("parse_mode" => "HTML"));
+                telegram_send_message(
+                    $chat_id,
+                    __("You’re facing the wrong direction!") . ' 🙁' .
+                    sprintf(__("Move back to block <code>%s</code>, face <i>%s</i> and scan the QR Code again."), $last_position_no_direction, cardinal_direction_to_description($last_position_direction)),
+                    array("parse_mode" => "HTML")
+                );
             }
             else {
                 // User is looking in wrong direction, but was already sent back to last step (so we can assume he reached it)
                 $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
                 $expected_block = get_position_no_direction($beginning_position);
                 $expected_direction = get_direction($beginning_position);
-                telegram_send_message($chat_id, "Per favore, girati verso <code>{$cardinal_position_to_name_map[$expected_direction]}</code>.", array("parse_mode" => "HTML"));
+
+                telegram_send_message(
+                    $chat_id,
+                    sprintf(__("Please face <i>%s</i>."), cardinal_direction_to_description($expected_direction)),
+                    array("parse_mode" => "HTML")
+                );
 
                 request_cardinal_position($chat_id, CARD_NOT_ANSWERING_QUIZ);
             }
@@ -107,7 +119,10 @@ function cardinal_message_processing($chat_id, $callback_data){
             return;
         }
         if($lvl > 0 && $cardinal_info == CARD_ANSWERING_QUIZ) {
-            telegram_send_message($chat_id, "Benissimo! Hai trovato il punto giusto.");
+            telegram_send_message(
+                $chat_id,
+                __("Very well! You have found the right spot.")
+            );
         }
 
         // Prepare instructions for next step
@@ -125,11 +140,15 @@ function cardinal_message_processing($chat_id, $callback_data){
         Logger::debug("Success of insertion: {$success}");
 
         // Send maze
-        telegram_send_message($chat_id, "<b>{$lvl}.</b> Segui queste indicazioni per risolvere il prossimo passo e scansiona il QRCode all'arrivo:\n<code>{$maze_message}</code>", array("parse_mode" => "HTML"));
+        telegram_send_message(
+            $chat_id,
+            sprintf(__("<b>%d.</b> Follow these instructions and scan the QR Code at the destination:\n<code>%s</code>"), $lvl, $maze_message),
+            array("parse_mode" => "HTML")
+        );
     }
     else {
         Logger::error("Invalid callback data: {$callback_data}");
-        telegram_send_message($chat_id, "Codice non valido. 😑");
+        telegram_send_message($chat_id, __("Invalid code."));
     }
 }
 
@@ -140,7 +159,7 @@ function name_message_processing($chat_id, $callback_data) {
     if ($data === "error"){
         // Request name again
         $memory->nameRequested = true;
-        telegram_send_message($chat_id, "Riscrivimi il tuo nome e cognome:");
+        telegram_send_message($chat_id, __("Write your full name again, please:"));
     }
     else {
         unset($memory->nameRequested);
