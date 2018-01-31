@@ -69,7 +69,7 @@ CREATE TABLE `user_status` (
   `completed_on` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `certificate_id` char(36) DEFAULT NULL,
-  `certificate_sent` bit(1) DEFAULT NULL,
+  `certificate_sent` bit(1) NOT NULL DEFAULT b'0',
   `language_code` varchar(5) DEFAULT NULL,
   `last_memory_update` datetime DEFAULT NULL,
   `memory` text
