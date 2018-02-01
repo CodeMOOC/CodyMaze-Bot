@@ -17,13 +17,15 @@ const LANGUAGE_LOCALE_MAP = array(
     'en-US' => 'en_US.utf8',
     'en' => 'en_US.utf8',
     'it' => 'it_IT.utf8',
-    'sr' => 'sr_RS.utf8@latin'
+    'sr' => 'sr_RS.utf8@latin',
+    'hu' => 'hu_HU.utf8'
 );
 
 // This array maps ISO language codes to user-readable representations of the
 // language, localized to the target language.
 const LANGUAGE_NAME_MAP = array(
     'en-US' => 'English 🇺🇸',
+    'hu' => 'Magyar 🇭🇺',
     'it' => 'Italiano 🇮🇹',
     'sr' => 'Srpski 🇷🇸'
 );

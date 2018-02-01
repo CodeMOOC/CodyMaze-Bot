@@ -1,0 +1,159 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: codymaze-bot\n"
+"PO-Revision-Date: 2018-02-01 09:32-0500\n"
+"Last-Translator: LorenzCK <lck@klopfenstein.net>\n"
+"Language-Team: Hungarian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"POT-Creation-Date: 2018-01-30 16:25+0100\n"
+"X-Crowdin-Project: codymaze-bot\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: text.pot\n"
+"Language: hu_HU\n"
+
+# User direction confirmation, %s is direction
+msgid "Ok, you’re looking %s!"
+msgstr "Rendben, most %s nézel!"
+
+# Backtracking instructions, parameters 1: destination block, 2: direction
+msgid "Move back to block <code>%s</code>, face <i>%s</i> and scan the QR Code again."
+msgstr "Menj vissza a <code>%s</code> négyzetre, nézz <i>%s</i> és olvad be a QR kódot újra."
+
+# User is facing wrong direction
+msgid "Please face <i>%s</i>."
+msgstr "Kérlek fordulj <i>%s</i>."
+
+# Confirmation on reaching current destination
+msgid "Very well! You have found the right spot."
+msgstr "Remek! Megtaláltad a megfelelő pontot."
+
+# Code instructions for current step, parameters 1: step number, 2: code instruction
+msgid "<b>%d.</b> Follow these instructions and scan the QR Code at the destination:\n"
+"<code>%s</code>"
+msgstr "<b>%d.</b> Kövesse ezeket az utasításokat, és olvassa be a QR-kódot, a rendeltetési helyen: <code>%s</code>"
+
+# Invalid code when receiving the user's direction (should never occur)
+msgid "Invalid code."
+msgstr "Érvénytelen kód."
+
+# Prompt for user name again
+msgid "Write your full name again, please:"
+msgstr "Kérjük, írja be a teljes nevét:"
+
+# Reset confirmation
+msgid "Your progress has been reset.\n"
+"Write /start to start anew or scan in a QR Code."
+msgstr "Haladásod újra indul.\n"
+"Írd be a /start parancsot, hogy újra indulhass vagy skenneld be a QR kódot."
+
+# Language switch confirmation
+msgid "Switched language."
+msgstr "Nyelv módosítása."
+
+# Final destintion reached
+msgid "You completed CodyMaze!\n"
+"If you want to play again, please send the /reset command."
+msgstr "Sikeresen teljesítetted a CodyMaze-t!\n"
+"Ha újra szerettnél játszani, kérjük írd be a /reset parancsot."
+
+# Error when requesting certificates if no certificate was generated
+msgid "You’ve never completed CodyMaze yet, I have no certificate to send you."
+msgstr "Még soha nem fejezted be a CodyMaze-t, nem tudunk tanúsítványt küldeni."
+
+# Error while receiving (unrequested) text from user
+msgid "Didn’t get that. Please scan one of the QR Codes in the maze."
+msgstr "Nem sikerült. Kérjük olvasd be újra valamelyik QR kódot."
+
+# Error, scanned in a code but does not match any valid coordinate
+msgid "Hmmm, the command you sent is not valid. Try scanning the CodyMaze QR Code again."
+msgstr "A parancs érvénytelen. Próbáld újra skennelni a CodyMaze QR kódját."
+
+# Error when receiving unsupported messages (picture, audio, etc.)
+msgid "I don’t understand this kind of message!"
+msgstr "Nem értem ezt az üzenetet!"
+
+# Caption for attachment (certificate transmission)
+msgid "Completion certificate. Code: %s."
+msgstr "Teljesítési igazolás. Kód: %s."
+
+# Prompt for target language in /setlanguage command
+msgid "Which language do you speak?"
+msgstr "Milyen nyelven beszélsz?"
+
+# Hello message, in response to /start
+msgid "Hello, I am the <b>CodyMaze</b> bot!"
+msgstr "Hello, Én vagyk a <b>CodyMaze</b> bot!"
+
+# Instructions for first-time users, in response to /start
+msgid "Please go to any of the grid’s outer squares and scan the QR Code you find there."
+msgstr "Kérlek menj bármelyik külső négyzetre a rácson és olvasd be a QR kódot amit ott találsz."
+
+# Error message when starting from an inner square
+msgid "Whoops! You should start from any of the grid’s outer squares."
+msgstr "Hoppá! Kezd el bámelyik külső négyzeten a rácsban."
+
+# Confirmation when starting position is reached, parameters 1: square code, 2: target direction
+msgid "Very well, you’re at the starting position in <code>%s</code>! Now please turn in order to face <i>%s</i>."
+msgstr "Nagyon jó, a kiindulási ponton vagy <code>%s</code>! Most kérlek fordulj és nézz <i>%s</i> irányba."
+
+# Error message, wrong position reached, starts backtracking to previous position
+msgid "Whoops, wrong!\n\n"
+"Get back to position <code>%s</code>, turn to face <i>%s</i>, and scan the QR Code again."
+msgstr "Hoppá, rossz!\n"
+"Menj vissza a <code>%s</code> pozicióra, fordulj és nézz <i>%s</i> irányba, olvasd be a QR kódot újra."
+
+# Error message while backtracking, sends instructions to get to a valid position
+msgid "Did you get lost?\n\n"
+"Please reach square <code>%s</code> and face <i>%s</i> to continue!"
+msgstr "Talán eltévedtél?\n\n"
+"Kérlek menj a <code>%s</code> négyzetre majd nézz <i>%s</i> irányba a folytatáshoz!"
+
+msgid "Congratulations! You’ve completed <b>CodyMaze</b>!"
+msgstr "Gratulálok! Sikeresen teljesítetted a <b>CodyMazet</b>!"
+
+msgid "Write down your full name for the completion certificate:"
+msgstr "Írd be a teljes neved a tanúsítvány eléréséhez:"
+
+msgid "Thanks for playing!"
+msgstr "Köszönöm a játékot!"
+
+msgid "What direction are you facing?"
+msgstr "Milyen irányba nézel?"
+
+msgid "North"
+msgstr "Észak"
+
+msgid "East"
+msgstr "Kelet"
+
+msgid "South"
+msgstr "Dél"
+
+msgid "West"
+msgstr "Nyugat"
+
+msgid "northwards"
+msgstr "észak felé"
+
+msgid "eastwards"
+msgstr "kelet felé"
+
+msgid "southwards"
+msgstr "dél felé"
+
+msgid "westwards"
+msgstr "nyugat felé"
+
+msgid "Your full name is %s. Is this correct?"
+msgstr "A teljes neved %s. Helyes?"
+
+msgid "Yes"
+msgstr "Igen"
+
+msgid "No"
+msgstr "Nem"
+
