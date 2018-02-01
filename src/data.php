@@ -17,15 +17,8 @@ define('CARD_ANSWERING_QUIZ', 't');
 define('CARD_NOT_ANSWERING_QUIZ', 'f');
 define('CARD_ENDGAME_POSITION', 'e');
 
-$cardinal_position_to_name_map = array(
-    "n" => "Nord",
-    "s" => "Sud",
-    "e" => "Est",
-    "w" => "Ovest"
-);
-
 function cardinal_direction_is_valid($dir) {
-    return array_key_exists($dir, $cardinal_position_to_name_map);
+    return in_array($dir, array("n", "s", "e", "w"));
 }
 
 function cardinal_direction_to_name($dir) {
