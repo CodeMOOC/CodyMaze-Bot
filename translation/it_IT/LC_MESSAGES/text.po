@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: codymaze-bot\n"
-"PO-Revision-Date: 2018-02-01 05:18-0500\n"
+"PO-Revision-Date: 2018-02-02 04:55-0500\n"
 "Last-Translator: LorenzCK <lck@klopfenstein.net>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,10 @@ msgstr ""
 # User direction confirmation, %s is direction
 msgid "Ok, you’re looking %s!"
 msgstr "Ok, stai guardando %s!"
+
+# User direction confirmation, wrong
+msgid "Stai guardando nella direzione sbagliata!"
+msgstr ""
 
 # Backtracking instructions, parameters 1: destination block, 2: direction
 msgid "Move back to block <code>%s</code>, face <i>%s</i> and scan the QR Code again."
@@ -137,15 +141,19 @@ msgstr "Sud"
 msgid "West"
 msgstr "Ovest"
 
+# Direction description, keep lowercase, as in "please turn northwards"
 msgid "northwards"
 msgstr "verso nord"
 
+# Direction description, keep lowercase, as in "please turn eastwards"
 msgid "eastwards"
 msgstr "verso est"
 
+# Direction description, keep lowercase, as in "please turn southwards"
 msgid "southwards"
 msgstr "verso sud"
 
+# Direction description, keep lowercase, as in "please turn westwards"
 msgid "westwards"
 msgstr "verso ovest"
 
@@ -157,4 +165,74 @@ msgstr "Sì"
 
 msgid "No"
 msgstr "No"
+
+# "Move forward" instruction (single letter, 'f' in English), must not conflict with other instruction letters
+msgid "f"
+msgstr "a"
+
+# "Turn left" instruction (single letter, 'l' in English), must not conflict with other instruction letters
+msgid "l"
+msgstr "s"
+
+# "Turn right" instruction (single letter, 'r' in English), must not conflict with other instruction letters
+msgid "r"
+msgstr "d"
+
+# "Has star" expression (i.e., if there is a star on the current square)
+msgid "star"
+msgstr "stella"
+
+# "Has no star" expression (i.e., if there is no star on the current square)
+msgid "no star"
+msgstr "non stella"
+
+# "If" conditional
+msgid "if"
+msgstr "se"
+
+# "Else" conditional
+msgid "else"
+msgstr "altrimenti"
+
+# "Has a free square ahead" expression
+msgid "path ahead"
+msgstr "strada davanti"
+
+msgid "path left"
+msgstr "strada a sx"
+
+msgid "path right"
+msgstr "strada a dx"
+
+# While loop instruction
+msgid "while"
+msgstr "finché"
+
+# Response to /help command, part 1
+msgid "I am the <b>CodyMaze bot</b> and I will guide you through the game."
+msgstr "Sono il <b>bot CodyMaze</b> e ti guiderò attraverso il gioco."
+
+# Response to /help command, part 2
+msgid "The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard."
+msgstr "Il gioco è composto da <b>13 sfide</b>: per ognuna di esse ti invierò delle istruzioni, che dovrai seguire alla lettera in modo da raggiungere la tua destinazione finale sulla scacchiera."
+
+# Response to /help command, if not playing
+msgid "In order to start playing, please scan the QR Code on one of the outer squares of the chessboard (that is, any square along the first or last row, or the first or last column). You may use any QR Code scanner application to do so."
+msgstr "Per iniziare a giocare, scansiona uno dei QR Code sul bordo della scacchiera (sarebbe a dire, lungo la prima o ultima riga, oppure lungo la prima o ultima colonna). Puoi utilizzare qualsiasi app per la scansione di QR Code."
+
+# Response to /help command, conclusion
+msgid "For further help, check out the <a href=\"%s\">official CodyMaze website</a>."
+msgstr "Per ulteriore aiuto, visita il <a href=\"%s\">sito ufficiale di CodyMaze</a>."
+
+# Response to /help command, instructions
+msgid "The instructions I will send you may contain the following commands:\n"
+"<code>f</code>: move forward,\n"
+"<code>l</code>: turn left,\n"
+"<code>r</code>: turn right,\n"
+"and other commands such as <code>if</code>, <code>else</code>, and <code>while</code>. Code blocks are indicated in <code>{}</code> and can be repeated. For instance, <code>2{fr}</code> tells you to move forward and turn right twice."
+msgstr "Le istruzioni che ti invierò potranno contenere i seguenti comandi:\n"
+"<code>a</code>: avanza di una casella,\n"
+"<code>s</code>: gira a sinistra,\n"
+"<code>d</code>: gira a destra,\n"
+"e altri comandi come <code>se</code>, <code>altrimenti</code> e <code>finché</code>. Blocchi di codice sono indicati da <code>{}</code> e possono essere ripetuti. Ad esempio, <code>2{fr}</code> significa che dovrai avanzare e girare a destra due volte di seguito."
 

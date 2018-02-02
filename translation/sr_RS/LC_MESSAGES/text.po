@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: codymaze-bot\n"
-"PO-Revision-Date: 2018-02-01 05:18-0500\n"
+"PO-Revision-Date: 2018-02-02 04:55-0500\n"
 "Last-Translator: LorenzCK <lck@klopfenstein.net>\n"
 "Language-Team: Serbian (Latin)\n"
 "MIME-Version: 1.0\n"
@@ -132,15 +132,19 @@ msgstr "Jug"
 msgid "West"
 msgstr "Zapad"
 
+# Direction description, keep lowercase, as in "please turn northwards"
 msgid "northwards"
 msgstr "prema severu"
 
+# Direction description, keep lowercase, as in "please turn eastwards"
 msgid "eastwards"
 msgstr "prema istoku"
 
+# Direction description, keep lowercase, as in "please turn southwards"
 msgid "southwards"
 msgstr "prema jugu"
 
+# Direction description, keep lowercase, as in "please turn westwards"
 msgid "westwards"
 msgstr "prema zapadu"
 
@@ -152,4 +156,74 @@ msgstr "Da"
 
 msgid "No"
 msgstr "Ne"
+
+# "Move forward" instruction (single letter, 'f' in English), must not conflict with other instruction letters
+msgid "f"
+msgstr "f"
+
+# "Turn left" instruction (single letter, 'l' in English), must not conflict with other instruction letters
+msgid "l"
+msgstr "l"
+
+# "Turn right" instruction (single letter, 'r' in English), must not conflict with other instruction letters
+msgid "r"
+msgstr "r"
+
+# "Has star" expression (i.e., if there is a star on the current square)
+msgid "star"
+msgstr "zvezda"
+
+# "Has no star" expression (i.e., if there is no star on the current square)
+msgid "no star"
+msgstr "nema zvezda"
+
+# "If" conditional
+msgid "if"
+msgstr "ako"
+
+# "Else" conditional
+msgid "else"
+msgstr "drugo"
+
+# "Has a free square ahead" expression
+msgid "path ahead"
+msgstr "put prema napred"
+
+msgid "path left"
+msgstr "put prema levo"
+
+msgid "path right"
+msgstr "put prema desno"
+
+# While loop instruction
+msgid "while"
+msgstr "dok je"
+
+# Response to /help command, part 1
+msgid "I am the <b>CodyMaze bot</b> and I will guide you through the game."
+msgstr "Ja sam <b>CodyMaze bot</b> i ja ću te voditi kroz igru."
+
+# Response to /help command, part 2
+msgid "The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard."
+msgstr "Igra se sastoji od <b>13 izazova</b>: za svaki od njih ću vam poslati nove instrukcije, morate pratiti tačno kako bi došli do konačnog odredišta na tabli."
+
+# Response to /help command, if not playing
+msgid "In order to start playing, please scan the QR Code on one of the outer squares of the chessboard (that is, any square along the first or last row, or the first or last column). You may use any QR Code scanner application to do so."
+msgstr "Da biste počeli sa igrom, molim vas, skenirajte QR kod na jednoj od spoljnih kvadrata table (to jest, bilo koji kvadrat u prvom ili zadnjem redu ili prvoj ili zadnjoj koloni). Možete koristiti bilo koju aplikaciju za skeniranje QR koda da biste to učinili."
+
+# Response to /help command, conclusion
+msgid "For further help, check out the <a href=\"%s\">official CodyMaze website</a>."
+msgstr "Za dalju pomoć, vidi <a href=\"%s\">zvanični sajt CodyMaze</a>."
+
+# Response to /help command, instructions
+msgid "The instructions I will send you may contain the following commands:\n"
+"<code>f</code>: move forward,\n"
+"<code>l</code>: turn left,\n"
+"<code>r</code>: turn right,\n"
+"and other commands such as <code>if</code>, <code>else</code>, and <code>while</code>. Code blocks are indicated in <code>{}</code> and can be repeated. For instance, <code>2{fr}</code> tells you to move forward and turn right twice."
+msgstr "Poslaću vam uputstva koja mogu da sadrže sledeće komande: \n"
+"<code>f</code>: kreni napred,\n"
+"<code>l</code>: skreni levo,\n"
+"<code>r</code>: skreni desno,\n"
+"kao i ostale komande poput <code>ako</code>, <code>drugo</code> i <code>dok</code>. Šifra blokova su naznačena u <code>{}</code> i mogu se ponavljati. Na primer, <code>2{fr}</code> govori da ideš napred i skrenite desno dva puta."
 

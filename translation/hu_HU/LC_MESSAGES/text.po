@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: codymaze-bot\n"
-"PO-Revision-Date: 2018-02-01 09:32-0500\n"
+"PO-Revision-Date: 2018-02-02 04:55-0500\n"
 "Last-Translator: LorenzCK <lck@klopfenstein.net>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -136,15 +136,19 @@ msgstr "Dél"
 msgid "West"
 msgstr "Nyugat"
 
+# Direction description, keep lowercase, as in "please turn northwards"
 msgid "northwards"
 msgstr "észak felé"
 
+# Direction description, keep lowercase, as in "please turn eastwards"
 msgid "eastwards"
 msgstr "kelet felé"
 
+# Direction description, keep lowercase, as in "please turn southwards"
 msgid "southwards"
 msgstr "dél felé"
 
+# Direction description, keep lowercase, as in "please turn westwards"
 msgid "westwards"
 msgstr "nyugat felé"
 
@@ -156,4 +160,74 @@ msgstr "Igen"
 
 msgid "No"
 msgstr "Nem"
+
+# "Move forward" instruction (single letter, 'f' in English), must not conflict with other instruction letters
+msgid "f"
+msgstr "f"
+
+# "Turn left" instruction (single letter, 'l' in English), must not conflict with other instruction letters
+msgid "l"
+msgstr "l"
+
+# "Turn right" instruction (single letter, 'r' in English), must not conflict with other instruction letters
+msgid "r"
+msgstr "r"
+
+# "Has star" expression (i.e., if there is a star on the current square)
+msgid "star"
+msgstr "csillag"
+
+# "Has no star" expression (i.e., if there is no star on the current square)
+msgid "no star"
+msgstr "nincs csillag"
+
+# "If" conditional
+msgid "if"
+msgstr "ha"
+
+# "Else" conditional
+msgid "else"
+msgstr "különben"
+
+# "Has a free square ahead" expression
+msgid "path ahead"
+msgstr "útvonal előtted"
+
+msgid "path left"
+msgstr "útvonal balra"
+
+msgid "path right"
+msgstr "útvonal jobbra"
+
+# While loop instruction
+msgid "while"
+msgstr "amíg"
+
+# Response to /help command, part 1
+msgid "I am the <b>CodyMaze bot</b> and I will guide you through the game."
+msgstr "Én vagyok a <b>CodyMaze bot</b> és vezetlek a játékon keresztül."
+
+# Response to /help command, part 2
+msgid "The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard."
+msgstr "A játék <b>13 kihívásból</b> áll: mindegyikhez küldök neked új utasításokat, amelyeket pontosan követned kell annak érdekében, hogy elérjünk a végső rendeltetési helyre a játék sakktábláján."
+
+# Response to /help command, if not playing
+msgid "In order to start playing, please scan the QR Code on one of the outer squares of the chessboard (that is, any square along the first or last row, or the first or last column). You may use any QR Code scanner application to do so."
+msgstr "Annak érdekében, hogy elkezdj játszani, kérjük olvasd le a QR-kódot, az bármelyik négyzetről a sakktábla külsején (ez azt jelenti, hogy bármelyik lehet az első vagy az utolsó sorban, vagy az első vagy az utolsó oszlopban). Használhatja bármely QR-kód olvasó alkalmazást erre."
+
+# Response to /help command, conclusion
+msgid "For further help, check out the <a href=\"%s\">official CodyMaze website</a>."
+msgstr "További segítségért nézd meg a <a href=\"%s\">hivatalos CodyMaze honlapját</a>."
+
+# Response to /help command, instructions
+msgid "The instructions I will send you may contain the following commands:\n"
+"<code>f</code>: move forward,\n"
+"<code>l</code>: turn left,\n"
+"<code>r</code>: turn right,\n"
+"and other commands such as <code>if</code>, <code>else</code>, and <code>while</code>. Code blocks are indicated in <code>{}</code> and can be repeated. For instance, <code>2{fr}</code> tells you to move forward and turn right twice."
+msgstr "Az utasításokat, amiket küldök neked a következő parancsokat tartalmazhatja:\n"
+"<code>f</code>: előrelépni,\n"
+"<code>l</code>: fordulj balra,\n"
+"<code>r</code>: forduljon jobbra,\n"
+"és más parancsokat, mint <code>ha</code>, <code>különben</code>, és <code>amíg</code>. A kód blokkok<code>{}</code>-ben szerepelnek, és ismétlődhetnek. Például <code>2{fr}</code> utasít, hogy lépj előre, és jobbra kétszer."
 
