@@ -5,7 +5,7 @@ use Knp\Snappy\Image;
 
 function htmlToPdf($name) {
     $guid = GUID();
-    $date = date("d/m/Y", time());
+    $date = date("j F Y");
 
     require "pdf-template.php"; // Needed to generate static HTML page - Snappy won't read .php files
 
@@ -53,10 +53,8 @@ function htmlToPdf($name) {
     }
 }
 
-function GUID()
-{
-    if (function_exists('com_create_guid') === true)
-    {
+function GUID() {
+    if (function_exists('com_create_guid') === true) {
         return trim(com_create_guid(), '{}');
     }
 
@@ -64,4 +62,4 @@ function GUID()
 }
 
 // to test:
-//htmlToPdf("Brendan Paolini");
+// var_dump(htmlToPdf("Lorenz Klopfenstein"));

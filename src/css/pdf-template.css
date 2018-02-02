@@ -7,13 +7,12 @@
     background-size: 1338px 910px;
 }
 
-#container span {
-    display: block;
+#container .wrapper {
+    padding: 370px 120px 0 120px;
 }
 
-.spaced {
-    display: block;
-    padding-top: 350px;
+#container .wrapper div {
+    margin: 0.6em 0;
 }
 
 .small-spaced {
@@ -21,14 +20,9 @@
     padding-top: 5px;
 }
 
-.padded {
-    display: block;
-    padding: 0px 100px 0px 100px;
-}
-
-.reduced {
-    display: block;
-    padding: 135px 250px 0px 250px;
+.title {
+    font-size: 22px;
+    font-style: italic;
 }
 
 .font-10 {
@@ -42,22 +36,22 @@
 }
 
 .font-20 {
-    font-size: 20px;
+    font-size: 22px;
 }
 
-.font-25 {
-    font-size: 25px;
-}
-
-.font-30 {
-    font-size: 30px;
+.name {
+    font-size: 34px;
     font-weight: bold;
     color: black;
-    margin: 0.6em 0;
+    margin: 2em 0;
 }
 
-#container span:last-child {
-    margin: 0.5em 0 0 0;
+.details {
+
+}
+
+.unbreakable {
+    white-space: nowrap;
 }
 
 #signature {

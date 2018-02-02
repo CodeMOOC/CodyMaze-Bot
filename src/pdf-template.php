@@ -10,10 +10,12 @@ ob_start();
     <body>
 
     <div id="container">
-        <span class="spaced font-20">Questo certificato attesta che</span>
-        <span class="font-30"><?= $name ?></span>
-        <span class="font-20 padded">ha concluso con successo l'attività dell'ora di coding con CodyMaze sperimentando le istruzioni elementari, le istruzioni in sequenza, le condizioni, le ripetizioni e le ripetizioni condizionate.</span>
-        <span class="font-20 padded">Questo certificato, rilasciato in data <?= $date ?>, ha l'identificativo <?= $guid ?></span>
+        <div class="wrapper">
+            <div class="title">Certificate of Completion</div>
+            <div class="name"><?= $name ?></div>
+            <div class="font-20">has successfully completed the “Hour of Code” activity with <b>CodyMaze</b>, performing code interpretation with basic coding instructions, among which sequence of elementary instructions, conditionals, repetitions, and conditional repetitions.</div>
+            <div class="font-20 details">This certificate, released on <span class="unbreakable"><?= $date ?>,</span> has the following identifier: <span class="unbreakable"><?= $guid ?>.</span></div>
+        </div>
     </div>
 
     </body>
