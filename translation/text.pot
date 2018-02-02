@@ -202,7 +202,7 @@ msgid "I am the <b>CodyMaze bot</b> and I will guide you through the game."
 msgstr ""
 
 # Response to /help command, part 2
-msgid "The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard."
+msgid "The game is composed of <b>13 challenges</b>: for each one I will send you new instructions, which you must follow exactly in order to reach the final destination on the game’s chessboard."
 msgstr ""
 
 # Response to /help command, if not playing
