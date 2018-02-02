@@ -51,6 +51,22 @@ function message_msg_processing($message) {
 
             set_new_callback_keyboard($response);
         }
+        else if($text === '/help') {
+            $move_count = db_scalar_query("SELECT count(*) FROM `moves` WHERE `telegram_id` = {$chat_id}");
+
+            $txt = __("I am the <b>CodyMaze bot</b> and I will guide you through the game.") . " 🤖 " . __("The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard.");
+            if($move_count == 0) {
+                $txt .= "\n\n" . __("In order to start playing, please scan the QR Code on one of the outer squares of the chessboard (that is, any square along the first or last row, or the first or last column). You may use any QR Code scanner application to do so.");
+            }
+            $txt .= "\n\n" . __("The instructions I will send you may contain the following commands:\n<code>f</code>: move forward,\n<code>l</code>: turn left,\n<code>r</code>: turn right,\nand other commands such as <code>if</code>, <code>else</code>, and <code>while</code>. Code blocks are indicated in <code>{}</code> and can be repeated. For instance, <code>2{fr}</code> tells you to move forward and turn right twice.");
+            $txt .= "\n\n" . sprintf(__("For further help, check out the <a href=\"%s\">official CodyMaze website</a>."), "https://github.com/CodeMOOC/CodyMazeBot");
+
+            telegram_send_message(
+                $chat_id,
+                $txt,
+                array("parse_mode" => "HTML")
+            );
+        }
         else if($user_info[USER_STATUS_COMPLETED] == 1) {
             // Game is completed
 

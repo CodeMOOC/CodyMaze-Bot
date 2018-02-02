@@ -130,15 +130,19 @@ msgstr ""
 msgid "West"
 msgstr ""
 
+# Direction description, keep lowercase, as in "please turn northwards"
 msgid "northwards"
 msgstr ""
 
+# Direction description, keep lowercase, as in "please turn eastwards"
 msgid "eastwards"
 msgstr ""
 
+# Direction description, keep lowercase, as in "please turn southwards"
 msgid "southwards"
 msgstr ""
 
+# Direction description, keep lowercase, as in "please turn westwards"
 msgid "westwards"
 msgstr ""
 
@@ -149,4 +153,66 @@ msgid "Yes"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+# "Move forward" instruction (single letter, 'f' in English), must not conflict with other instruction letters
+msgid "f"
+msgstr ""
+
+# "Turn left" instruction (single letter, 'l' in English), must not conflict with other instruction letters
+msgid "l"
+msgstr ""
+
+# "Turn right" instruction (single letter, 'r' in English), must not conflict with other instruction letters
+msgid "r"
+msgstr ""
+
+# "Has star" expression (i.e., if there is a star on the current square)
+msgid "star"
+msgstr ""
+
+# "Has no star" expression (i.e., if there is no star on the current square)
+msgid "no star"
+msgstr ""
+
+# "If" conditional
+msgid "if"
+msgstr ""
+
+# "Else" conditional
+msgid "else"
+msgstr ""
+
+# "Has a free square ahead" expression
+msgid "path ahead"
+msgstr ""
+
+msgid "path left"
+msgstr ""
+
+msgid "path right"
+msgstr ""
+
+# While loop instruction
+msgid "while"
+msgstr ""
+
+# Response to /help command, part 1
+msgid "I am the <b>CodyMaze bot</b> and I will guide you through the game."
+msgstr ""
+
+# Response to /help command, part 2
+msgid "The game is composed of <b>13 challenges</b>: for each one, I will send you new instructions that you must follow exactly in order to reach the final destination on the game’s chessboard."
+msgstr ""
+
+# Response to /help command, if not playing
+msgid "In order to start playing, please scan the QR Code on one of the outer squares of the chessboard (that is, any square along the first or last row, or the first or last column). You may use any QR Code scanner application to do so."
+msgstr ""
+
+# Response to /help command, conclusion
+msgid "For further help, check out the <a href=\"%s\">official CodyMaze website</a>."
+msgstr ""
+
+# Response to /help command, instructions
+msgid "The instructions I will send you may contain the following commands:\n<code>f</code>: move forward,\n<code>l</code>: turn left,\n<code>r</code>: turn right,\nand other commands such as <code>if</code>, <code>else</code>, and <code>while</code>. Code blocks are indicated in <code>{}</code> and can be repeated. For instance, <code>2{fr}</code> tells you to move forward and turn right twice."
 msgstr ""
