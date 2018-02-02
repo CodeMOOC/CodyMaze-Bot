@@ -189,7 +189,7 @@ function start_command_continue_conversation($chat_id, $user_position_id = null)
 
             telegram_send_message(
                 $chat_id,
-                sprintf(__("Whoops, wrong!\n\nGet back to position <code>%s</code>, turn to face <i>%s</i>, and scan the QR Code again."), $previous_position_no_direction, $cardinal_direction_to_description($previous_position_direction)),
+                sprintf(__("Whoops, wrong!\n\nGet back to position <code>%s</code>, turn to face <i>%s</i>, and scan the QR Code again."), $previous_position_no_direction, cardinal_direction_to_description($previous_position_direction)),
                 array("parse_mode" => "HTML")
             );
         }
