@@ -49,10 +49,10 @@ Scan in the QR&nbsp;Code you find there and follow the instructions of the bot.
 At each step, the bot will **ask for your orientation** (in terms of the cardinal directions as indicated in the figure above) and will then provide you with an **instruction** to follow.
 The command is composed of basic instructions such as `f` for “move one step forward”, `l` for “turn left”, and `r` for “turn right”.
 Other, more complex, instructions such as `while`, `if`, and `else` will be used as the game progresses.
+Instructions blocks (indicated by braces `{}`) can be repeated: for instance, `2{fr}` is equivalent to `frfr` and means that you will have to move forward and turn right twice.
 
 After executing the instructions given by the bot and arriving on a new square (which in some cases can be the same square from which you started), you must **scan the square’s QR&nbsp;Code**.
 The bot will confirm that you have reached the correct destination.
-
 If—at any point—you fail to correctly follow the instructions, the bot will tell you so and will let you move back to a previous position.
 
 The game is over after **13** correctly executed instructions.
