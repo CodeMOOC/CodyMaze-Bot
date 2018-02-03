@@ -67,6 +67,42 @@ function message_msg_processing($message) {
                 array("parse_mode" => "HTML")
             );
         }
+        else if($text === "/send_my_certificates") {
+            telegram_send_message(
+                $chat_id,
+                __("Sorry, feature under development. Come back later.")
+            );
+            return;
+
+            $result = db_table_query("SELECT * FROM `certificates_list` WHERE telegram_id = '{$chat_id}'");
+            if($result !== null && $result !== false){
+                foreach ($result as $item) {
+                    $pdf_path = "certificates/" . $item[0] . ".png";
+                    if(!file_exists($pdf_path)) {
+                        Logger::warning("Certificate file '{$pdf_path}' does not exist, trying PDF", __FILE__);
+
+                        $pdf_path = "certificates/" . $item[0] . ".pdf";
+                        if(!file_exists($pdf_path)) {
+                            Logger::error("Certificate file '{$pdf_path}' does not exist, ignoring", __FILE__);
+                            continue;
+                        }
+                    }
+                    $short_guid = substr($item[0], 0, 18);
+
+                    $result = telegram_send_document(
+                        $chat_id,
+                        $pdf_path,
+                        sprintf(__("Completion certificate. Code: %s."), $short_guid)
+                    );
+                }
+            }
+            else {
+                telegram_send_message(
+                    $chat_id,
+                    __("You’ve never completed CodyMaze yet, I have no certificate to send you.") . ' 😔'
+                );
+            }
+        }
         else if($user_info[USER_STATUS_COMPLETED] == 1) {
             // Game is completed
 
@@ -83,26 +119,6 @@ function message_msg_processing($message) {
 
             if (strpos($text, "/start") === 0) {
                 perform_command_start($chat_id, mb_strtolower($text));
-            }
-            else if($text == "/send_my_certificates"){
-                $result = db_table_query("SELECT * FROM certificates_list WHERE telegram_id = '{$chat_id}'");
-                if($result !== null && $result !== false){
-                    foreach ($result as $item) {
-                        $pdf_path = "certificates/" . $item[0] . ".pdf";
-                        $short_guid = substr($item[0], 0, 18);
-
-                        $result = telegram_send_document(
-                            $chat_id,
-                            $pdf_path,
-                            sprintf(__("Completion certificate. Code: %s."), $short_guid)
-                        );
-                    }
-                } else {
-                    telegram_send_message(
-                        $chat_id,
-                        __("You’ve never completed CodyMaze yet, I have no certificate to send you.") . ' 😔'
-                    );
-                }
             }
             else {
                 // User is probably writing something instead of playing
