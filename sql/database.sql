@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 29, 2018 at 11:42 PM
+-- Generation Time: Feb 03, 2018 at 06:16 PM
 -- Server version: 10.1.26-MariaDB-0+deb9u1
 -- PHP Version: 7.0.27-0+deb9u1
 
@@ -83,20 +83,24 @@ CREATE TABLE `user_status` (
 -- Indexes for table `certificates_list`
 --
 ALTER TABLE `certificates_list`
-  ADD PRIMARY KEY (`certificate_id`);
+  ADD PRIMARY KEY (`certificate_id`),
+  ADD KEY `telegram_id` (`telegram_id`),
+  ADD KEY `date` (`date`);
 
 --
 -- Indexes for table `log`
 --
 ALTER TABLE `log`
   ADD PRIMARY KEY (`log_id`),
-  ADD KEY `telegram_id` (`telegram_id`);
+  ADD KEY `telegram_id` (`telegram_id`),
+  ADD KEY `timestamp` (`timestamp`);
 
 --
 -- Indexes for table `moves`
 --
 ALTER TABLE `moves`
-  ADD KEY `reached_on` (`reached_on`);
+  ADD KEY `reached_on` (`reached_on`),
+  ADD KEY `telegram_id` (`telegram_id`);
 
 --
 -- Indexes for table `user_status`
