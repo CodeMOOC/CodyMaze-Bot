@@ -37,7 +37,7 @@ CREATE TABLE `certificates_list` (
 
 CREATE TABLE `log` (
   `log_id` int(10) UNSIGNED NOT NULL,
-  `severity` tinyint(3) NOT NULL,
+  `severity` tinyint(3) UNSIGNED NOT NULL,
   `tag` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `message` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` datetime NOT NULL,
