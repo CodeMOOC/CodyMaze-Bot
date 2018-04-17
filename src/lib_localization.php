@@ -102,18 +102,16 @@ function localization_switch_and_persist_locale($telegram_id, $language_code) {
 
     Logger::debug("Switching and persisting to {$real_language_code}", __FILE__);
 
-    $update_result = db_perform_action("UPDATE `user_status` SET `language_code` = '" . db_escape($real_language_code) . "' WHERE `telegram_id` = {$telegram_id}");
-    if($update_result === false) {
-        Logger::warning("Failed to update localization setting", __FILE__, $telegram_id);
-    }
-    else if($update_result === 0) {
-        // No user record, yet
-        if(db_perform_action("INSERT INTO `user_status` (`telegram_id`, `language_code`) VALUES({$telegram_id}, '" . db_escape($real_language_code) . "')") === false) {
-            Logger::error("Failed to insert localization setting", __FILE__, $telegram_id);
-        }
+    $upsert_sql = sprintf(
+        'INSERT INTO `user_status` (`telegram_id`, `language_code`) VALUES(%1$d, \'%2$s\') ON DUPLICATE KEY UPDATE `language_code` = \'%2$s\'',
+        $telegram_id,
+        db_escape($real_language_code)
+    );
+    $upsert_result = db_perform_action($upsert_sql);
+    if($upsert_result === false) {
+        Logger::error("Failed to upsert localization setting ({$upsert_sql})", __FILE__, $telegram_id);
     }
     else {
-        // All set
         Logger::debug("Localization setting updated: {$real_language_code}", __FILE__, $telegram_id);
     }
 }
