@@ -29,7 +29,7 @@ function callback_msg_processing($callback) {
         }
     }
     else {
-        Logger::warning("Already processed callback from message ID {$message_id}, ignoring", __FILE__, $chat_id);
+        Logger::debug("Already processed callback from message ID {$message_id}, ignoring", __FILE__, $chat_id);
     }
 
     memory_persist($chat_id);
@@ -86,6 +86,8 @@ function cardinal_message_processing($chat_id, $callback_data){
                 $last_position_no_direction = get_position_no_direction($beginning_position);
                 $last_position_direction = get_direction($beginning_position);
 
+                Logger::info("Sending back to {$last_position_no_direction}-{$last_position_direction}", __FILE__, $chat_id);
+
                 telegram_send_message(
                     $chat_id,
                     __("You’re facing the wrong direction!") . ' 🙁' .
@@ -98,6 +100,8 @@ function cardinal_message_processing($chat_id, $callback_data){
                 $beginning_position = db_scalar_query("SELECT cell FROM moves WHERE telegram_id = {$chat_id} AND reached_on IS NOT NULL ORDER BY reached_on DESC LIMIT 1");
                 $expected_block = get_position_no_direction($beginning_position);
                 $expected_direction = get_direction($beginning_position);
+
+                Logger::info("Adjusting direction to {$expected_block}-{$expected_direction}", __FILE__, $chat_id);
 
                 telegram_send_message(
                     $chat_id,
