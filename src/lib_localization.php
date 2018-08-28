@@ -137,4 +137,4 @@ bindtextdomain('text', $target_dir);
 bind_textdomain_codeset('text', 'UTF-8');
 
 // Set default locale
-localization_set_locale('');
+localization_set_locale('it');

@@ -7,7 +7,6 @@ function message_msg_processing($message) {
     Logger::debug("Processing text message", __FILE__);
 
     $chat_id = $message['chat']['id'];
-    $chat_language = "it_IT";
     if(isset($message['from']['language_code'])) {
         $chat_language = $message['from']['language_code'];
     }
