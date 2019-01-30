@@ -71,4 +71,5 @@ If you’d like to add a new translation, please [submit a new issue](https://gi
 
 * Brendan Paolini
 * Lorenz Cuno Klopfenstein
+* Saverio Delpriori
 * Caba Veres
