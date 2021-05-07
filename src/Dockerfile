@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
     unzip libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pecl install grpc
-RUN pecl install protobuf
+#RUN pecl install grpc
+#RUN pecl install protobuf
 
 RUN docker-php-ext-install zip gettext mysqli
 
@@ -21,7 +21,8 @@ RUN php -r "unlink('composer-setup.php');"
 COPY composer.json /var/www/html/
 COPY composer.lock /var/www/html/
 
-RUN php composer.phar require google/cloud-firestore
+#RUN php composer.phar require google/cloud-firestore
+#RUN php composer.phar require knplabs/knp-snappy
 
 # Copy in code
 COPY ./ /var/www/html/
