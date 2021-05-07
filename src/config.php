@@ -17,6 +17,7 @@ define('DATABASE_HOST', getenv('DATABASE_HOST'));
 define('DATABASE_NAME', getenv('DATABASE_NAME'));
 define('DATABASE_USERNAME', getenv('DATABASE_USERNAME'));
 define('DATABASE_PASSWORD', getenv('DATABASE_PASSWORD'));
+define('DATABASE_SOCKET', getenv('DATABASE_SOCKET'));
 
 // PHP configuration
 date_default_timezone_set('UTC'); // ensure UTC is used for all date functions
