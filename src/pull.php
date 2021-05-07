@@ -10,8 +10,7 @@
 
 require_once(dirname(__FILE__) . '/lib.php');
 
-// Reload latest update ID received (if any) from persistent store
-$last_update = @file_get_contents(dirname(__FILE__) . '/pull-last-update.txt');
+$last_update = getenv('TELEGRAM_LAST_UPDATE');
 
 // Fetch updates from API
 // Note: we remember the last fetched ID and query for the next one, if available.
@@ -41,9 +40,6 @@ Logger::debug('New update received: ' . print_r($update, true), __FILE__);
 // ]
 
 $update_id = $update['update_id'];
-
-// Update persistent store with latest update ID received
-file_put_contents(dirname(__FILE__) . '/pull-last-update.txt', $update_id);
 
 include 'msg_processing_simple.php';
 ?>

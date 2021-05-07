@@ -131,7 +131,7 @@ function _e($msgid, $domain = 'text') {
 }
 
 // Load text domains
-$target_dir = (dirname(__FILE__) . '/../translation');
+$target_dir = (dirname(__FILE__) . '/translation');
 
 bindtextdomain('text', $target_dir);
 bind_textdomain_codeset('text', 'UTF-8');

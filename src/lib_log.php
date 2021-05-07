@@ -62,12 +62,6 @@ class Logger {
                 // Write warnings and errors to the system log
                 error_log(self::severity_to_char($level) . ':' . $tag . ':' . $message);
             }
-
-            if($level > self::SEVERITY_DEBUG) {
-                $telegram_id_value = (is_int($telegram_id)) ? $telegram_id : 'NULL';
-
-                db_perform_action("INSERT INTO `log` (`log_id`, `severity`, `tag`, `message`, `timestamp`, `telegram_id`) VALUES(DEFAULT, {$level}, '" . db_escape($base_tag) . "', '" . db_escape($message) . "', NOW(), {$telegram_id_value})");
-            }
         }
     }
 }
