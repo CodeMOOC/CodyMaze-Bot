@@ -111,7 +111,7 @@ function message_msg_processing($message) {
 
             if (isset($memory->nameRequested)) {
                 // User is writing name for certificate
-                request_name($chat_id, $text);
+                //request_name($chat_id, $text);
             }
             else {
                 telegram_send_message($chat_id, __("You completed CodyMaze!\nIf you want to play again, please send the /reset command."));

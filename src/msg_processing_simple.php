@@ -15,7 +15,7 @@ require_once(dirname(__FILE__) . '/message_msg_processing.php');
 require_once(dirname(__FILE__) . '/debug_msg_processing.php');
 require_once(dirname(__FILE__) . '/maze_generator.php');
 require_once(dirname(__FILE__) . '/maze_commands.php');
-require_once(dirname(__FILE__) . '/htmltopdf.php');
+//require_once(dirname(__FILE__) . '/htmltopdf.php');
 
 // This file assumes to be included by pull.php or
 // hook.php right after receiving a new Telegram update.
@@ -209,7 +209,7 @@ function end_of_game($chat_id) {
     db_perform_action("UPDATE user_status SET completed = 1 WHERE telegram_id = {$chat_id}");
 
     telegram_send_message($chat_id, __("Congratulations! You’ve completed <b>CodyMaze</b>!") . ' 👏', array("parse_mode" => "HTML"));
-    telegram_send_message($chat_id, __("Write down your full name for the completion certificate:"), array("parse_mode" => "HTML"));
+    //telegram_send_message($chat_id, __("Write down your full name for the completion certificate:"), array("parse_mode" => "HTML"));
 }
 
 function send_pdf($chat_id, $name){
@@ -217,6 +217,7 @@ function send_pdf($chat_id, $name){
 
     db_perform_action("UPDATE `user_status` SET `completed_on` = NOW(), name = '" . db_escape($name) . "' WHERE `telegram_id` = {$chat_id}");
 
+    /*
     $result = htmlToPdf($name);
     Logger::debug("RESULT:");
     Logger::debug("pdf_valid: ". $result["pdf_valid"]);
@@ -250,6 +251,7 @@ function send_pdf($chat_id, $name){
     else {
         Logger::error("Failed to generate certificate", __FILE__, $chat_id);
     }
+    */
 }
 
 function request_cardinal_position($chat_id, $state) {
