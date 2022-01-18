@@ -1,4 +1,9 @@
-# CodyMaze
+# CodyMaze bot
+
+**Development of this project has halted.**&nbsp;🛑  
+**The project is superseded by [CodyMazeBot v2](https://github.com/CodeMOOC/CodyMazeBot-v2), a porting of this project to C#/.NET.**
+
+---
 
 A simple Telegram bot that challenges you in an “Hour of Code”-style game, with coding-based challenges that must be solved by physically moving on a full-scale chessboard.
 
